@@ -46,11 +46,24 @@ class App {
             this.handleRegisteredUserAnswer(answer);
         }
     }
+    async goNext() {
+        let answer = await prompts_1.default({
+            type: "confirm",
+            name: "value",
+            message: "Back to overview?",
+            initial: true
+        });
+        console.log(answer.value);
+        if (answer.value)
+            await this.showMethods();
+        else
+            process.exit(22);
+    }
     async handleUserAnswer(_answer) {
         console.log(_answer.value);
         switch (_answer.value) {
             case "1":
-                App.user.chooseSurvery();
+                App.user.showLatestSurveys();
                 break;
             case "2":
                 App.user.searchSurvey();
@@ -59,29 +72,30 @@ class App {
                 App.user.watchGlobalStats();
                 break;
             case "4":
-                App.user.login();
+                await App.user.login();
                 break;
             case "5":
-                App.user.register();
+                await App.user.register();
                 break;
             default:
                 break;
         }
+        await this.goNext();
     }
     async handleRegisteredUserAnswer(_answer) {
         console.log(_answer.value);
         switch (_answer.value) {
             case "1":
-                App.user.chooseSurvery();
+                App.user.showLatestSurveys();
                 break;
             case "2":
                 App.user.searchSurvey();
                 break;
             case "3":
-                App.user.watchGlobalStats();
+                await App.user.watchGlobalStats();
                 break;
             case "4":
-                App.user.watchSpecificStats();
+                await App.user.watchSpecificStats();
                 break;
             default:
                 break;

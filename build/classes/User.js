@@ -5,15 +5,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const prompts_1 = __importDefault(require("prompts"));
+const AbstractUser_1 = require("./abstracts/AbstractUser");
 const App_1 = require("./App");
+const FileHandler_1 = require("./FileHandler");
 const RegisteredUser_1 = require("./RegisteredUser");
-class User {
+class User extends AbstractUser_1.AbstractUser {
     static _instance;
-    constructor() { }
+    constructor() {
+        super();
+    }
     static getInstance() {
         return User._instance || (this._instance = new this());
     }
-    chooseSurvery() {
+    showLatestSurveys() {
         return;
     }
     searchSurvey() {
@@ -22,12 +26,24 @@ class User {
     watchGlobalStats() {
         return;
     }
-    login() {
-        return;
+    async login() {
+        let userArray = FileHandler_1.FileHandler.getInstance().readArrayFile("../data/users.json");
+        let username = await this.enterUsername();
+        let password = await this.enterPassword();
+        if (this.isMatchingUser(username, userArray, password)) {
+            let registeredUser = new RegisteredUser_1.RegisteredUser(username, password);
+            App_1.App.user = registeredUser;
+            console.log("You successfully logged in! ", App_1.App.user);
+        }
+        else {
+            console.log("Wrong username or password");
+            await this.login();
+        }
     }
     async register() {
+        let userArray = FileHandler_1.FileHandler.getInstance().readArrayFile("../data/users.json");
         let username = await this.enterUsername();
-        while (!this.isValidUsername(username) || this.isExistingUsername(username)) {
+        while (!this.isValidUsername(username) || this.isMatchingUser(username, userArray)) {
             if (!this.isValidUsername(username))
                 console.log("Your username must be alphanumerical and contain between 4 and 15 characters");
             else
@@ -39,8 +55,11 @@ class User {
             console.log("Your password must contain at least 4 characters");
             password = await this.enterPassword();
         }
-        App_1.App.user = new RegisteredUser_1.RegisteredUser(username, password);
-        console.log(App_1.App.user);
+        let registeredUser = new RegisteredUser_1.RegisteredUser(username, password);
+        App_1.App.user = registeredUser;
+        userArray.push(registeredUser);
+        FileHandler_1.FileHandler.getInstance().writeFile("../data/users.json", userArray);
+        console.log("You have successfully registered! ", App_1.App.user);
     }
     async enterUsername() {
         let username = await prompts_1.default({
@@ -66,7 +85,17 @@ class User {
         let regex = /^.{4,}$/;
         return regex.test(_password);
     }
-    isExistingUsername(_username) {
+    isMatchingUser(_username, _userArray, password) {
+        for (let user of _userArray) {
+            if (password) {
+                if (user.username == _username && user.password == password)
+                    return true;
+            }
+            else {
+                if (user.username == _username)
+                    return true;
+            }
+        }
         return false;
     }
 }

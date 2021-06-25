@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegisteredUser = void 0;
-class RegisteredUser {
+const AbstractUser_1 = require("./abstracts/AbstractUser");
+class RegisteredUser extends AbstractUser_1.AbstractUser {
     username;
-    _password;
+    password;
     constructor(_username, _password) {
+        super();
         this.username = _username;
-        this._password = _password;
+        this.password = _password;
     }
-    chooseSurvery() {
+    showLatestSurveys() {
         return;
     }
     searchSurvey() {

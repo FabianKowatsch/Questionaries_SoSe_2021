@@ -1,14 +1,15 @@
-import { AbstractUser } from "../interfaces/AbstractUser";
+import { AbstractUser } from "./abstracts/AbstractUser";
 
-export class RegisteredUser implements AbstractUser {
+export class RegisteredUser extends AbstractUser {
   public username: string;
-  private _password: string;
+  public password: string;
   constructor(_username: string, _password: string) {
+    super();
     this.username = _username;
-    this._password = _password;
+    this.password = _password;
   }
 
-  public chooseSurvery(): void {
+  public showLatestSurveys(): void {
     return;
   }
 
