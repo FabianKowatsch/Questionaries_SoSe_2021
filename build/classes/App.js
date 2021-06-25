@@ -9,8 +9,12 @@ const RegisteredUser_1 = require("./RegisteredUser");
 const prompts_1 = __importDefault(require("prompts"));
 class App {
     static user;
+    static _instance;
     constructor() {
         App.user = User_1.User.getInstance();
+    }
+    static getInstance() {
+        return App._instance || (this._instance = new this());
     }
     async showMethods() {
         let answer;
@@ -38,8 +42,9 @@ class App {
                 choices: [
                     { title: "Show latest Surveys", description: "This option has a description", value: "1" },
                     { title: "Search for Survey", value: "2" },
-                    { title: "Watch Statistics", value: "3" },
-                    { title: "Watch Statistic for Created Surveys", value: "4" }
+                    { title: "Create a new Survey", value: "3" },
+                    { title: "Watch Statistics", value: "4" },
+                    { title: "Watch Statistic for Created Surveys", value: "5" }
                 ],
                 initial: 1
             });
@@ -53,14 +58,12 @@ class App {
             message: "Back to overview?",
             initial: true
         });
-        console.log(answer.value);
         if (answer.value)
             await this.showMethods();
         else
             process.exit(22);
     }
     async handleUserAnswer(_answer) {
-        console.log(_answer.value);
         switch (_answer.value) {
             case "1":
                 App.user.showLatestSurveys();
@@ -80,10 +83,9 @@ class App {
             default:
                 break;
         }
-        await this.goNext();
+        await this.showMethods();
     }
     async handleRegisteredUserAnswer(_answer) {
-        console.log(_answer.value);
         switch (_answer.value) {
             case "1":
                 App.user.showLatestSurveys();
@@ -92,14 +94,18 @@ class App {
                 App.user.searchSurvey();
                 break;
             case "3":
-                await App.user.watchGlobalStats();
+                await App.user.createSurvey();
                 break;
             case "4":
+                await App.user.watchGlobalStats();
+                break;
+            case "5":
                 await App.user.watchSpecificStats();
                 break;
             default:
                 break;
         }
+        await this.showMethods();
     }
 }
 exports.App = App;

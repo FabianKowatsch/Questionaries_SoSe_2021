@@ -9,6 +9,10 @@ export abstract class AbstractUser {
     return;
   }
 
+  createSurvey(): void {
+    return;
+  }
+
   login(): void {
     return;
   }

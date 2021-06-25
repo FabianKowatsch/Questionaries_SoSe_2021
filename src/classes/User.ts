@@ -40,6 +40,7 @@ export class User extends AbstractUser {
   }
   public async register(): Promise<void> {
     let userArray: RegisteredUser[] = FileHandler.getInstance().readArrayFile("../data/users.json");
+
     let username: string = await this.enterUsername();
 
     while (!this.isValidUsername(username) || this.isMatchingUser(username, userArray)) {
@@ -49,6 +50,7 @@ export class User extends AbstractUser {
     }
 
     let password: string = await this.enterPassword();
+
     while (!this.isValidPassword(password)) {
       console.log("Your password must contain at least 4 characters");
       password = await this.enterPassword();

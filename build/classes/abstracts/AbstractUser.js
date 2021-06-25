@@ -5,6 +5,9 @@ class AbstractUser {
     watchSpecificStats() {
         return;
     }
+    createSurvey() {
+        return;
+    }
     login() {
         return;
     }

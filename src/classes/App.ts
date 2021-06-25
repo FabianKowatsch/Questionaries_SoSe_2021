@@ -5,8 +5,12 @@ import { AbstractUser } from "./abstracts/AbstractUser";
 
 export class App {
   public static user: AbstractUser;
-  constructor() {
+  private static _instance: App;
+  private constructor() {
     App.user = User.getInstance();
+  }
+  public static getInstance(): App {
+    return App._instance || (this._instance = new this());
   }
 
   public async showMethods(): Promise<void> {
@@ -34,8 +38,9 @@ export class App {
         choices: [
           { title: "Show latest Surveys", description: "This option has a description", value: "1" },
           { title: "Search for Survey", value: "2" },
-          { title: "Watch Statistics", value: "3" },
-          { title: "Watch Statistic for Created Surveys", value: "4" }
+          { title: "Create a new Survey", value: "3" },
+          { title: "Watch Statistics", value: "4" },
+          { title: "Watch Statistic for Created Surveys", value: "5" }
         ],
         initial: 1
       });
@@ -49,12 +54,10 @@ export class App {
       message: "Back to overview?",
       initial: true
     });
-    console.log(answer.value);
     if (answer.value) await this.showMethods();
     else process.exit(22);
   }
   private async handleUserAnswer(_answer: Answers<string>): Promise<void> {
-    console.log(_answer.value);
     switch (_answer.value) {
       case "1":
         App.user.showLatestSurveys();
@@ -74,10 +77,9 @@ export class App {
       default:
         break;
     }
-    await this.goNext();
+    await this.showMethods();
   }
   private async handleRegisteredUserAnswer(_answer: Answers<string>): Promise<void> {
-    console.log(_answer.value);
     switch (_answer.value) {
       case "1":
         App.user.showLatestSurveys();
@@ -86,13 +88,17 @@ export class App {
         App.user.searchSurvey();
         break;
       case "3":
-        await App.user.watchGlobalStats();
+        await App.user.createSurvey();
         break;
       case "4":
+        await App.user.watchGlobalStats();
+        break;
+      case "5":
         await App.user.watchSpecificStats();
         break;
       default:
         break;
     }
+    await this.showMethods();
   }
 }
