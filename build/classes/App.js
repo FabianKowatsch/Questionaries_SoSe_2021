@@ -69,7 +69,7 @@ class App {
                 App.user.showLatestSurveys();
                 break;
             case "2":
-                App.user.searchSurvey();
+                await App.user.searchSurvey();
                 break;
             case "3":
                 App.user.watchGlobalStats();
@@ -91,7 +91,7 @@ class App {
                 App.user.showLatestSurveys();
                 break;
             case "2":
-                App.user.searchSurvey();
+                await App.user.searchSurvey();
                 break;
             case "3":
                 await App.user.createSurvey();

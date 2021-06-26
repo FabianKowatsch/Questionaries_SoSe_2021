@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Question = void 0;
 const prompts_1 = __importDefault(require("prompts"));
 class Question {
-    static minAnswerAmount = 2;
-    static maxAnswerAmount = 10;
+    static _minAnswerAmount = 2;
+    static _maxAnswerAmount = 10;
     title;
     answers;
     constructor(_title) {
@@ -15,7 +15,6 @@ class Question {
         this.answers = new Array();
     }
     async addAnswer() {
-        console.log(this.answers.length);
         let name = await prompts_1.default({
             type: "text",
             name: "value",
@@ -23,18 +22,13 @@ class Question {
         });
         let answer = { name: name.value, count: 0 };
         this.answers.push(answer);
-        if (this.answers.length < Question.minAnswerAmount) {
+        if (this.answers.length < Question._minAnswerAmount) {
             await this.addAnswer();
         }
         else {
-            if (this.answers.length < Question.maxAnswerAmount) {
-                let confirm = await prompts_1.default({
-                    type: "confirm",
-                    name: "value",
-                    message: "Do you want to add another Answer?",
-                    initial: true
-                });
-                if (confirm.value) {
+            if (this.answers.length < Question._maxAnswerAmount) {
+                let confirm = await this.confirmNextAnswer();
+                if (confirm) {
                     await this.addAnswer();
                 }
                 else {
@@ -45,6 +39,17 @@ class Question {
                 return;
             }
         }
+    }
+    async confirmNextAnswer() {
+        let confirm = await prompts_1.default({
+            type: "toggle",
+            name: "value",
+            message: "Do you want to add another Answer?",
+            initial: true,
+            active: "yes",
+            inactive: "no"
+        });
+        return confirm.value;
     }
 }
 exports.Question = Question;

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NullSurvey = void 0;
 const AbstractSurvey_1 = require("./abstracts/AbstractSurvey");
 class NullSurvey extends AbstractSurvey_1.AbstractSurvey {
+    uuid;
     constructor() {
         super();
     }
