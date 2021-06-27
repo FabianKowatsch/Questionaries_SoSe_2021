@@ -22,7 +22,7 @@ export class RegisteredUser extends AbstractUser {
     await survey.addQuestion();
   }
 
-  public showLatestSurveys(): void {
+  public showPopularSurveys(): void {
     return;
   }
 

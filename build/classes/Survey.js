@@ -24,9 +24,6 @@ class Survey extends AbstractSurvey_1.AbstractSurvey {
         this.creator = _creator;
         this.uuid = uuid_1.v4();
     }
-    isNull() {
-        return false;
-    }
     async addQuestion() {
         let title = await prompts_1.default({
             type: "text",

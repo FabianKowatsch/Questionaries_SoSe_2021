@@ -25,7 +25,7 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         await survey.addTimeSpan();
         await survey.addQuestion();
     }
-    showLatestSurveys() {
+    showPopularSurveys() {
         return;
     }
     searchSurvey() {

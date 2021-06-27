@@ -18,21 +18,39 @@ class User extends AbstractUser_1.AbstractUser {
     static getInstance() {
         return User._instance || (this._instance = new this());
     }
-    showLatestSurveys() {
-        return;
+    async showPopularSurveys() {
+        let choices = this.createChoicesWithRestrictions(true);
+        let answer = await prompts_1.default({
+            type: "select",
+            name: "value",
+            message: "Select the survey you want to participate in: ",
+            choices: choices,
+            limit: 2
+        });
+        switch (answer.value) {
+            case undefined:
+                await App_1.App.getInstance().goNext();
+                break;
+            default:
+                await this.startSurvey(answer.value);
+                break;
+        }
     }
     async searchSurvey() {
-        let choices = this.createChoicesWithRestrictions();
+        let choices = this.createChoicesWithRestrictions(false);
         let answer = await prompts_1.default({
             type: "autocomplete",
             name: "value",
-            message: "Type the name of the survey you want to participate: ",
+            message: "Type the name of the survey you want to participate in: ",
             choices: choices,
-            initial: "No Matches, enter Text to display surveys or press ESC to return to menu",
             suggest: (input, choices) => Promise.resolve(choices.filter((survey) => survey.title.slice(0, input.length) === input))
         });
         switch (answer.value) {
             case "disabled":
+                await this.searchSurvey();
+                break;
+            case undefined:
+                console.log("no matches, try again");
                 await this.searchSurvey();
                 break;
             default:
@@ -82,7 +100,6 @@ class User extends AbstractUser_1.AbstractUser {
         let survey = Dao_1.Dao.getInstance().getSurvey(_uuid);
         let answers = await this.answerQuestions(survey);
         let statistic = Dao_1.Dao.getInstance().getStatistic(_uuid);
-        console.log(answers);
         this.updateStatistics(answers, statistic);
     }
     async answerQuestions(_survey) {
@@ -108,7 +125,6 @@ class User extends AbstractUser_1.AbstractUser {
         return choices;
     }
     updateStatistics(_answers, _statistic) {
-        console.log(_statistic);
         for (let index = 0; index < _statistic.questions.length; index++) {
             let chosenAnswerIndex = parseInt(_answers[index]);
             let chosenAnswer = _statistic.questions[index].answers[chosenAnswerIndex];
@@ -118,7 +134,6 @@ class User extends AbstractUser_1.AbstractUser {
             _statistic.users.push(App_1.App.user.username);
         }
         _statistic.completedCounter++;
-        console.log(_statistic);
         Dao_1.Dao.getInstance().updateStatistic(_statistic);
     }
     async enterUsername() {
@@ -158,17 +173,34 @@ class User extends AbstractUser_1.AbstractUser {
         }
         return false;
     }
-    createChoicesWithRestrictions() {
-        let surveyArray = Dao_1.Dao.getInstance().getAllSurveys();
+    createChoicesWithRestrictions(_popularOnly) {
+        let flagRed = "\x1b[31m";
         let choices = new Array();
+        let surveyArray;
+        if (_popularOnly) {
+            surveyArray = Dao_1.Dao.getInstance().getMostPopularSurveys();
+        }
+        else {
+            surveyArray = Dao_1.Dao.getInstance().getAllSurveys();
+        }
         surveyArray.forEach((survey) => {
             let dateStart = new Date(survey.timeSpan.start);
             let dateEnd = new Date(survey.timeSpan.end);
             if (dateStart.getTime() > Date.now()) {
-                choices.push({ title: "\x1b[31m" + survey.title, value: "disabled", disabled: true, description: `locked, starting date: ${survey.timeSpan.start}` });
+                choices.push({
+                    title: flagRed + survey.title + (_popularOnly ? ` (locked, starting date: ${survey.timeSpan.start})` : ""),
+                    value: "disabled",
+                    disabled: true,
+                    description: `locked, starting date: ${survey.timeSpan.start}`
+                });
             }
             else if (dateEnd.getTime() <= Date.now()) {
-                choices.push({ title: survey.title, value: "disabled", disabled: true, description: `locked, terminating date: ${survey.timeSpan.end}` });
+                choices.push({
+                    title: flagRed + survey.title + (_popularOnly ? ` (locked, starting date: ${survey.timeSpan.start})` : ""),
+                    value: "disabled",
+                    disabled: true,
+                    description: `locked, terminating date: ${survey.timeSpan.end}`
+                });
             }
             else {
                 choices.push({ title: survey.title, value: survey.uuid });

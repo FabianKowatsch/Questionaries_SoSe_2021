@@ -21,7 +21,7 @@ export class App {
         name: "value",
         message: "Which function do you want to use?: ",
         choices: [
-          { title: "Show latest Surveys", description: "This option has a description", value: "1" },
+          { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
           { title: "Search for Survey", value: "2" },
           { title: "Watch Statistics", value: "3" },
           { title: "Login", value: "4" },
@@ -29,14 +29,14 @@ export class App {
         ],
         initial: 1
       });
-      this.handleUserAnswer(answer);
+      await this.handleUserAnswer(answer);
     } else if (App.user instanceof RegisteredUser) {
       answer = await prompts({
         type: "select",
         name: "value",
         message: "Which function do you want to use?: ",
         choices: [
-          { title: "Show latest Surveys", description: "This option has a description", value: "1" },
+          { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
           { title: "Search for Survey", value: "2" },
           { title: "Create a new Survey", value: "3" },
           { title: "Watch Statistics", value: "4" },
@@ -44,7 +44,7 @@ export class App {
         ],
         initial: 1
       });
-      this.handleRegisteredUserAnswer(answer);
+      await this.handleRegisteredUserAnswer(answer);
     }
   }
   public async goNext(): Promise<void> {
@@ -60,7 +60,7 @@ export class App {
   private async handleUserAnswer(_answer: Answers<string>): Promise<void> {
     switch (_answer.value) {
       case "1":
-        App.user.showLatestSurveys();
+        await App.user.showPopularSurveys();
         break;
       case "2":
         await App.user.searchSurvey();
@@ -77,12 +77,12 @@ export class App {
       default:
         break;
     }
-    await this.showMethods();
+    await this.goNext();
   }
   private async handleRegisteredUserAnswer(_answer: Answers<string>): Promise<void> {
     switch (_answer.value) {
       case "1":
-        App.user.showLatestSurveys();
+        await App.user.showPopularSurveys();
         break;
       case "2":
         await App.user.searchSurvey();
@@ -99,6 +99,6 @@ export class App {
       default:
         break;
     }
-    await this.showMethods();
+    await this.goNext();
   }
 }

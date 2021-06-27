@@ -1,5 +1,5 @@
 export abstract class AbstractUser {
-  abstract showLatestSurveys(): void;
+  abstract showPopularSurveys(): void;
 
   abstract searchSurvey(): void;
 

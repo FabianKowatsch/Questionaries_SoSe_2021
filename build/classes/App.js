@@ -24,7 +24,7 @@ class App {
                 name: "value",
                 message: "Which function do you want to use?: ",
                 choices: [
-                    { title: "Show latest Surveys", description: "This option has a description", value: "1" },
+                    { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
                     { title: "Search for Survey", value: "2" },
                     { title: "Watch Statistics", value: "3" },
                     { title: "Login", value: "4" },
@@ -32,7 +32,7 @@ class App {
                 ],
                 initial: 1
             });
-            this.handleUserAnswer(answer);
+            await this.handleUserAnswer(answer);
         }
         else if (App.user instanceof RegisteredUser_1.RegisteredUser) {
             answer = await prompts_1.default({
@@ -40,7 +40,7 @@ class App {
                 name: "value",
                 message: "Which function do you want to use?: ",
                 choices: [
-                    { title: "Show latest Surveys", description: "This option has a description", value: "1" },
+                    { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
                     { title: "Search for Survey", value: "2" },
                     { title: "Create a new Survey", value: "3" },
                     { title: "Watch Statistics", value: "4" },
@@ -48,7 +48,7 @@ class App {
                 ],
                 initial: 1
             });
-            this.handleRegisteredUserAnswer(answer);
+            await this.handleRegisteredUserAnswer(answer);
         }
     }
     async goNext() {
@@ -66,7 +66,7 @@ class App {
     async handleUserAnswer(_answer) {
         switch (_answer.value) {
             case "1":
-                App.user.showLatestSurveys();
+                await App.user.showPopularSurveys();
                 break;
             case "2":
                 await App.user.searchSurvey();
@@ -83,12 +83,12 @@ class App {
             default:
                 break;
         }
-        await this.showMethods();
+        await this.goNext();
     }
     async handleRegisteredUserAnswer(_answer) {
         switch (_answer.value) {
             case "1":
-                App.user.showLatestSurveys();
+                await App.user.showPopularSurveys();
                 break;
             case "2":
                 await App.user.searchSurvey();
@@ -105,7 +105,7 @@ class App {
             default:
                 break;
         }
-        await this.showMethods();
+        await this.goNext();
     }
 }
 exports.App = App;

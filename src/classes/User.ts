@@ -1,13 +1,13 @@
 import prompts, { Answers, Choice } from "prompts";
 import { Answer } from "../types/Answer.type";
 import { AbstractStatistic } from "./abstracts/AbstractStatistic";
+import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 import { AbstractUser } from "./abstracts/AbstractUser";
 import { App } from "./App";
 import { Dao } from "./Dao";
 import { FileHandler } from "./FileHandler";
 import { Question } from "./Question";
 import { RegisteredUser } from "./RegisteredUser";
-import { Survey } from "./Survey";
 
 export class User extends AbstractUser {
   private static _instance: User;
@@ -18,24 +18,41 @@ export class User extends AbstractUser {
     return User._instance || (this._instance = new this());
   }
 
-  public showLatestSurveys(): void {
-    return;
+  public async showPopularSurveys(): Promise<void> {
+    let choices: Choice[] = this.createChoicesWithRestrictions(true);
+    let answer: Answers<string> = await prompts({
+      type: "select",
+      name: "value",
+      message: "Select the survey you want to participate in: ",
+      choices: choices,
+      limit: 2
+    });
+    switch (answer.value) {
+      case undefined:
+        await App.getInstance().goNext();
+        break;
+      default:
+        await this.startSurvey(answer.value);
+        break;
+    }
   }
 
   public async searchSurvey(): Promise<void> {
-    let choices: Choice[] = this.createChoicesWithRestrictions();
+    let choices: Choice[] = this.createChoicesWithRestrictions(false);
 
     let answer: Answers<string> = await prompts({
       type: "autocomplete",
       name: "value",
-      message: "Type the name of the survey you want to participate: ",
+      message: "Type the name of the survey you want to participate in: ",
       choices: choices,
-      initial: "No Matches, enter Text to display surveys or press ESC to return to menu",
       suggest: (input: string, choices: Choice[]) => Promise.resolve(choices.filter((survey) => survey.title.slice(0, input.length) === input))
     });
-
     switch (answer.value) {
       case "disabled":
+        await this.searchSurvey();
+        break;
+      case undefined:
+        console.log("no matches, try again");
         await this.searchSurvey();
         break;
       default:
@@ -86,13 +103,12 @@ export class User extends AbstractUser {
     console.log("You have successfully registered! ", App.user);
   }
   private async startSurvey(_uuid: string): Promise<void> {
-    let survey: Survey = Dao.getInstance().getSurvey(_uuid);
+    let survey: AbstractSurvey = Dao.getInstance().getSurvey(_uuid);
     let answers: string[] = await this.answerQuestions(survey);
     let statistic: AbstractStatistic = Dao.getInstance().getStatistic(_uuid);
-    console.log(answers);
     this.updateStatistics(answers, statistic);
   }
-  private async answerQuestions(_survey: Survey): Promise<string[]> {
+  private async answerQuestions(_survey: AbstractSurvey): Promise<string[]> {
     console.log("You are now answering: " + _survey.title);
     let answersForStatistic: string[] = new Array<string>();
     for (let question of _survey.questions) {
@@ -115,7 +131,6 @@ export class User extends AbstractUser {
     return choices;
   }
   private updateStatistics(_answers: string[], _statistic: AbstractStatistic): void {
-    console.log(_statistic);
     for (let index: number = 0; index < _statistic.questions.length; index++) {
       let chosenAnswerIndex: number = parseInt(_answers[index]);
       let chosenAnswer: Answer = _statistic.questions[index].answers[chosenAnswerIndex];
@@ -125,7 +140,6 @@ export class User extends AbstractUser {
       _statistic.users.push(App.user.username);
     }
     _statistic.completedCounter++;
-    console.log(_statistic);
     Dao.getInstance().updateStatistic(_statistic);
   }
   private async enterUsername(): Promise<string> {
@@ -166,21 +180,37 @@ export class User extends AbstractUser {
     return false;
   }
 
-  private createChoicesWithRestrictions(): Choice[] {
+  private createChoicesWithRestrictions(_popularOnly: boolean): Choice[] {
     let flagRed: string = "\x1b[31m";
-    let surveyArray: Survey[] = Dao.getInstance().getAllSurveys();
     let choices: Choice[] = new Array<Choice>();
+    let surveyArray: AbstractSurvey[];
+    if (_popularOnly) {
+      surveyArray = Dao.getInstance().getMostPopularSurveys();
+    } else {
+      surveyArray = Dao.getInstance().getAllSurveys();
+    }
     surveyArray.forEach((survey) => {
       let dateStart: Date = new Date(survey.timeSpan.start);
       let dateEnd: Date = new Date(survey.timeSpan.end);
       if (dateStart.getTime() > Date.now()) {
-        choices.push({ title: flagRed + survey.title, value: "disabled", disabled: true, description: `locked, starting date: ${survey.timeSpan.start}` });
+        choices.push({
+          title: flagRed + survey.title + (_popularOnly ? ` (locked, starting date: ${survey.timeSpan.start})` : ""),
+          value: "disabled",
+          disabled: true,
+          description: `locked, starting date: ${survey.timeSpan.start}`
+        });
       } else if (dateEnd.getTime() <= Date.now()) {
-        choices.push({ title: flagRed + survey.title, value: "disabled", disabled: true, description: `locked, terminating date: ${survey.timeSpan.end}` });
+        choices.push({
+          title: flagRed + survey.title + (_popularOnly ? ` (locked, starting date: ${survey.timeSpan.start})` : ""),
+          value: "disabled",
+          disabled: true,
+          description: `locked, terminating date: ${survey.timeSpan.end}`
+        });
       } else {
         choices.push({ title: survey.title, value: survey.uuid });
       }
     });
+
     return choices;
   }
 }

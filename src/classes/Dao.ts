@@ -3,6 +3,7 @@ import { Statistic } from "./Statistic";
 import { NullStatistic } from "./NullStatistic";
 import { Survey } from "./Survey";
 import { AbstractStatistic } from "./abstracts/AbstractStatistic";
+import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 export class Dao {
   private static _instance: Dao;
   private constructor() {}
@@ -38,19 +39,31 @@ export class Dao {
     FileHandler.getInstance().writeFile("../data/statistics.json", statisticArray);
   }
 
-  public getSurvey(_id: string): Survey {
-    let surveyArray: Survey[] = this.getAllSurveys();
-    let survey: Survey = surveyArray.filter((survey) => survey.uuid == _id)[0];
+  public getSurvey(_id: string): AbstractSurvey {
+    let surveyArray: AbstractSurvey[] = this.getAllSurveys();
+    let survey: AbstractSurvey = surveyArray.filter((survey) => survey.uuid == _id)[0];
     return survey;
   }
 
-  public getAllSurveys(): Survey[] {
-    let surveyArray: Survey[] = FileHandler.getInstance().readArrayFile("../data/surveys.json");
+  public getAllSurveys(): AbstractSurvey[] {
+    let surveyArray: AbstractSurvey[] = FileHandler.getInstance().readArrayFile("../data/surveys.json");
+    return surveyArray;
+  }
+
+  public getMostPopularSurveys(): AbstractSurvey[] {
+    let surveyArray: AbstractSurvey[] = new Array<AbstractSurvey>();
+    let statisticArray: AbstractStatistic[] = this.getAllStatistics();
+    statisticArray.sort((a, b) => (a.completedCounter < b.completedCounter ? 1 : b.completedCounter < a.completedCounter ? -1 : 0));
+    let maxSurveys: number = 10;
+    if (statisticArray.length < 10) maxSurveys = statisticArray.length;
+    for (let index: number = 0; index < maxSurveys; index++) {
+      surveyArray.push(this.getSurvey(statisticArray[index].uuid));
+    }
     return surveyArray;
   }
 
   public addSurvey(_survey: Survey): void {
-    let surveyArray: Survey[] = this.getAllSurveys();
+    let surveyArray: AbstractSurvey[] = this.getAllSurveys();
     surveyArray.push(_survey);
     FileHandler.getInstance().writeFile("../data/surveys.json", surveyArray);
   }
