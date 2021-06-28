@@ -1,4 +1,4 @@
-import prompts, { Answers, Choice } from "prompts";
+import { Choice } from "prompts";
 import { Answer } from "../types/Answer.type";
 import { AbstractStatistic } from "./abstracts/AbstractStatistic";
 import { AbstractSurvey } from "./abstracts/AbstractSurvey";
@@ -8,6 +8,8 @@ import { Dao } from "./Dao";
 import { FileHandler } from "./FileHandler";
 import { Question } from "./Question";
 import { RegisteredUser } from "./RegisteredUser";
+import sha256 from "crypto-js/sha256";
+import { ConsoleHandler } from "./ConsoleHandler";
 
 export class User extends AbstractUser {
   private static _instance: User;
@@ -20,19 +22,13 @@ export class User extends AbstractUser {
 
   public async showPopularSurveys(): Promise<void> {
     let choices: Choice[] = this.createChoicesWithRestrictions(true);
-    let answer: Answers<string> = await prompts({
-      type: "select",
-      name: "value",
-      message: "Select the survey you want to participate in: ",
-      choices: choices,
-      limit: 2
-    });
-    switch (answer.value) {
+    let answer: string = await ConsoleHandler.select("Select the survey you want to participate in: ", choices);
+    switch (answer) {
       case undefined:
         await App.getInstance().goNext();
         break;
       default:
-        await this.startSurvey(answer.value);
+        await this.startSurvey(answer);
         break;
     }
   }
@@ -40,14 +36,8 @@ export class User extends AbstractUser {
   public async searchSurvey(): Promise<void> {
     let choices: Choice[] = this.createChoicesWithRestrictions(false);
 
-    let answer: Answers<string> = await prompts({
-      type: "autocomplete",
-      name: "value",
-      message: "Type the name of the survey you want to participate in: ",
-      choices: choices,
-      suggest: (input: string, choices: Choice[]) => Promise.resolve(choices.filter((survey) => survey.title.slice(0, input.length) === input))
-    });
-    switch (answer.value) {
+    let answer: string = await ConsoleHandler.autocomplete("Type the name of the survey you want to participate in: ", choices);
+    switch (answer) {
       case "disabled":
         await this.searchSurvey();
         break;
@@ -56,7 +46,7 @@ export class User extends AbstractUser {
         await this.searchSurvey();
         break;
       default:
-        await this.startSurvey(answer.value);
+        await this.startSurvey(answer);
         break;
     }
   }
@@ -66,13 +56,14 @@ export class User extends AbstractUser {
   }
   public async login(): Promise<void> {
     let userArray: RegisteredUser[] = FileHandler.getInstance().readArrayFile("../data/users.json");
-    let username: string = await this.enterUsername();
-    let password: string = await this.enterPassword();
-
+    let username: string = await ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
+    let password: string = await ConsoleHandler.password("Enter your password (minimum of 4 characters): ");
+    let pwd: CryptoJS.lib.WordArray = sha256(password);
+    password = pwd.toString();
     if (this.isMatchingUser(username, userArray, password)) {
       let registeredUser: RegisteredUser = new RegisteredUser(username, password);
       App.user = registeredUser;
-      console.log("You successfully logged in! ", App.user);
+      console.log("You successfully logged in! ");
     } else {
       console.log("Wrong username or password");
       await this.login();
@@ -81,26 +72,27 @@ export class User extends AbstractUser {
   public async register(): Promise<void> {
     let userArray: RegisteredUser[] = FileHandler.getInstance().readArrayFile("../data/users.json");
 
-    let username: string = await this.enterUsername();
+    let username: string = await await ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
 
     while (!this.isValidUsername(username) || this.isMatchingUser(username, userArray)) {
       if (!this.isValidUsername(username)) console.log("Your username must be alphanumerical and contain between 4 and 15 characters");
       else console.log("Your username already exists");
-      username = await this.enterUsername();
+      username = await await ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
     }
 
-    let password: string = await this.enterPassword();
+    let password: string = await ConsoleHandler.password("Enter your password (minimum of 4 characters): ");
 
     while (!this.isValidPassword(password)) {
       console.log("Your password must contain at least 4 characters");
-      password = await this.enterPassword();
+      password = await ConsoleHandler.password("Enter your password (minimum of 4 characters): ");
     }
-
+    let pwd: CryptoJS.lib.WordArray = sha256(password);
+    password = pwd.toString();
     let registeredUser: RegisteredUser = new RegisteredUser(username, password);
     App.user = registeredUser;
     userArray.push(registeredUser);
     FileHandler.getInstance().writeFile("../data/users.json", userArray);
-    console.log("You have successfully registered! ", App.user);
+    console.log("You have successfully registered! ");
   }
   private async startSurvey(_uuid: string): Promise<void> {
     let survey: AbstractSurvey = Dao.getInstance().getSurvey(_uuid);
@@ -113,13 +105,8 @@ export class User extends AbstractUser {
     let answersForStatistic: string[] = new Array<string>();
     for (let question of _survey.questions) {
       let choices: Choice[] = this.toPromptChoices(question);
-      let answer: Answers<string> = await prompts({
-        type: "select",
-        name: "value",
-        message: question.title,
-        choices: choices
-      });
-      answersForStatistic.push(answer.value);
+      let answer: string = await ConsoleHandler.select(question.title, choices);
+      answersForStatistic.push(answer);
     }
     return answersForStatistic;
   }
@@ -141,22 +128,6 @@ export class User extends AbstractUser {
     }
     _statistic.completedCounter++;
     Dao.getInstance().updateStatistic(_statistic);
-  }
-  private async enterUsername(): Promise<string> {
-    let username: Answers<string> = await prompts({
-      type: "text",
-      name: "value",
-      message: "Enter your username (alphanumerical, 4-15 characters): "
-    });
-    return username.value;
-  }
-  private async enterPassword(): Promise<string> {
-    let password: Answers<string> = await prompts({
-      type: "password",
-      name: "value",
-      message: "Enter your password (minimum of 4 characters): "
-    });
-    return password.value;
   }
 
   private isValidUsername(_username: string): boolean {

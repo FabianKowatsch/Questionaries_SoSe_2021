@@ -1,5 +1,5 @@
-import prompts, { Answers } from "prompts";
 import { Answer } from "../types/Answer.type";
+import { ConsoleHandler } from "./ConsoleHandler";
 export class Question {
   private static _minAnswerAmount: number = 2;
   private static _maxAnswerAmount: number = 10;
@@ -11,13 +11,8 @@ export class Question {
   }
 
   public async addAnswer(): Promise<void> {
-    let name: Answers<string> = await prompts({
-      type: "text",
-      name: "value",
-      message: "Enter an answer: "
-    });
-
-    let answer: Answer = { name: name.value, count: 0 };
+    let name: string = await ConsoleHandler.text("Enter an answer: ");
+    let answer: Answer = { name: name, count: 0 };
     this.answers.push(answer);
     if (this.answers.length < Question._minAnswerAmount) {
       await this.addAnswer();
@@ -36,14 +31,7 @@ export class Question {
   }
 
   private async confirmNextAnswer(): Promise<boolean> {
-    let confirm: Answers<string> = await prompts({
-      type: "toggle",
-      name: "value",
-      message: "Do you want to add another Answer?",
-      initial: true,
-      active: "yes",
-      inactive: "no"
-    });
-    return confirm.value;
+    let confirm: boolean = await ConsoleHandler.toggle("Do you want to add another Answer?", "yes", "no", false);
+    return confirm;
   }
 }

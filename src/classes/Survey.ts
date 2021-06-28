@@ -1,10 +1,10 @@
 import { Question } from "./Question";
 import { TimeSpan } from "../types/TimeSpan.type";
 import { AbstractSurvey } from "./abstracts/AbstractSurvey";
-import prompts, { Answers } from "prompts";
 import { Dao } from "./Dao";
 import { v4 as uuidV4 } from "uuid";
 import { Statistic } from "./Statistic";
+import { ConsoleHandler } from "./ConsoleHandler";
 export class Survey extends AbstractSurvey {
   private static _minQuestionAmount: number = 5;
   public title: string;
@@ -20,13 +20,8 @@ export class Survey extends AbstractSurvey {
     this.uuid = uuidV4();
   }
   public async addQuestion(): Promise<void> {
-    let title: Answers<string> = await prompts({
-      type: "text",
-      name: "value",
-      message: "Enter a question you want to add: "
-    });
-
-    let question: Question = new Question(title.value);
+    let title: string = await ConsoleHandler.text("Enter a question you want to add: ");
+    let question: Question = new Question(title);
     await question.addAnswer();
     this.questions.push(question);
 
@@ -34,15 +29,8 @@ export class Survey extends AbstractSurvey {
       await this.addQuestion();
       return;
     } else {
-      let answer: Answers<string> = await prompts({
-        type: "toggle",
-        name: "value",
-        message: "Do you want to finish the Survey?",
-        initial: false,
-        active: "yes",
-        inactive: "no"
-      });
-      if (answer.value) {
+      let answer: boolean = await ConsoleHandler.toggle("Do you want to finish the Survey?", "yes", "no");
+      if (answer) {
         await this.upload();
         return;
       } else {
@@ -52,24 +40,8 @@ export class Survey extends AbstractSurvey {
     }
   }
 
-  public async addTimeSpan(): Promise<void> {
-    let yesterday: Date = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    let timeStart: Answers<string> = await prompts({
-      type: "date",
-      name: "value",
-      message: "Enter the starting date of the survey ( format: D.M.YYYY): ",
-      mask: "D.M.YYYY",
-      validate: (date) => (date < yesterday.getTime() ? "Dont select past dates" : true)
-    });
-    let timeEnd: Answers<string> = await prompts({
-      type: "date",
-      name: "value",
-      message: "Enter the terminating date of the survey ( format: D.M.YYYY): ",
-      mask: "D.M.YYYY",
-      validate: (date) => (timeStart.value > date ? "Make sure your selected date is after your previous date" : true)
-    });
-    this.timeSpan = { start: timeStart.value, end: timeEnd.value };
+  public async setTimeSpan(): Promise<void> {
+    this.timeSpan = await ConsoleHandler.timeSpan();
   }
 
   public upload(): void {

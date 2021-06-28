@@ -1,12 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.App = void 0;
 const User_1 = require("./User");
 const RegisteredUser_1 = require("./RegisteredUser");
-const prompts_1 = __importDefault(require("prompts"));
+const ConsoleHandler_1 = require("./ConsoleHandler");
 class App {
     static user;
     static _instance;
@@ -18,53 +15,39 @@ class App {
     }
     async showMethods() {
         let answer;
+        let choices;
         if (App.user instanceof User_1.User) {
-            answer = await prompts_1.default({
-                type: "select",
-                name: "value",
-                message: "Which function do you want to use?: ",
-                choices: [
-                    { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
-                    { title: "Search for Survey", value: "2" },
-                    { title: "Watch Statistics", value: "3" },
-                    { title: "Login", value: "4" },
-                    { title: "Register", value: "5" }
-                ],
-                initial: 1
-            });
+            choices = [
+                { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
+                { title: "Search for Survey", value: "2" },
+                { title: "Watch personal Statistics", value: "3" },
+                { title: "Login", value: "4" },
+                { title: "Register", value: "5" }
+            ];
+            answer = await ConsoleHandler_1.ConsoleHandler.select("Which function do you want to use? ", choices);
             await this.handleUserAnswer(answer);
         }
         else if (App.user instanceof RegisteredUser_1.RegisteredUser) {
-            answer = await prompts_1.default({
-                type: "select",
-                name: "value",
-                message: "Which function do you want to use?: ",
-                choices: [
-                    { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
-                    { title: "Search for Survey", value: "2" },
-                    { title: "Create a new Survey", value: "3" },
-                    { title: "Watch Statistics", value: "4" },
-                    { title: "Watch Statistic for Created Surveys", value: "5" }
-                ],
-                initial: 1
-            });
+            choices = [
+                { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
+                { title: "Search for Survey", value: "2" },
+                { title: "Create a new Survey", value: "3" },
+                { title: "Watch personal Statistics", value: "4" },
+                { title: "Watch Statistic for Created Surveys", value: "5" }
+            ];
+            answer = await ConsoleHandler_1.ConsoleHandler.select("Which function do you want to use? ", choices);
             await this.handleRegisteredUserAnswer(answer);
         }
     }
     async goNext() {
-        let answer = await prompts_1.default({
-            type: "confirm",
-            name: "value",
-            message: "Back to overview?",
-            initial: true
-        });
-        if (answer.value)
+        let answer = await ConsoleHandler_1.ConsoleHandler.toggle("Back to overview?", "yes", "no");
+        if (answer)
             await this.showMethods();
         else
             process.exit(22);
     }
     async handleUserAnswer(_answer) {
-        switch (_answer.value) {
+        switch (_answer) {
             case "1":
                 await App.user.showPopularSurveys();
                 break;
@@ -86,7 +69,7 @@ class App {
         await this.goNext();
     }
     async handleRegisteredUserAnswer(_answer) {
-        switch (_answer.value) {
+        switch (_answer) {
             case "1":
                 await App.user.showPopularSurveys();
                 break;

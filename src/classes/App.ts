@@ -1,7 +1,8 @@
 import { User } from "./User";
 import { RegisteredUser } from "./RegisteredUser";
-import prompts, { Answers } from "prompts";
+import { Choice } from "prompts";
 import { AbstractUser } from "./abstracts/AbstractUser";
+import { ConsoleHandler } from "./ConsoleHandler";
 
 export class App {
   public static user: AbstractUser;
@@ -14,51 +15,37 @@ export class App {
   }
 
   public async showMethods(): Promise<void> {
-    let answer: Answers<string>;
+    let answer: string;
+    let choices: Choice[];
     if (App.user instanceof User) {
-      answer = await prompts({
-        type: "select",
-        name: "value",
-        message: "Which function do you want to use?: ",
-        choices: [
-          { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
-          { title: "Search for Survey", value: "2" },
-          { title: "Watch Statistics", value: "3" },
-          { title: "Login", value: "4" },
-          { title: "Register", value: "5" }
-        ],
-        initial: 1
-      });
+      choices = [
+        { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
+        { title: "Search for Survey", value: "2" },
+        { title: "Watch personal Statistics", value: "3" },
+        { title: "Login", value: "4" },
+        { title: "Register", value: "5" }
+      ];
+      answer = await ConsoleHandler.select("Which function do you want to use? ", choices);
       await this.handleUserAnswer(answer);
     } else if (App.user instanceof RegisteredUser) {
-      answer = await prompts({
-        type: "select",
-        name: "value",
-        message: "Which function do you want to use?: ",
-        choices: [
-          { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
-          { title: "Search for Survey", value: "2" },
-          { title: "Create a new Survey", value: "3" },
-          { title: "Watch Statistics", value: "4" },
-          { title: "Watch Statistic for Created Surveys", value: "5" }
-        ],
-        initial: 1
-      });
+      choices = [
+        { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
+        { title: "Search for Survey", value: "2" },
+        { title: "Create a new Survey", value: "3" },
+        { title: "Watch personal Statistics", value: "4" },
+        { title: "Watch Statistic for Created Surveys", value: "5" }
+      ];
+      answer = await ConsoleHandler.select("Which function do you want to use? ", choices);
       await this.handleRegisteredUserAnswer(answer);
     }
   }
   public async goNext(): Promise<void> {
-    let answer: Answers<string> = await prompts({
-      type: "confirm",
-      name: "value",
-      message: "Back to overview?",
-      initial: true
-    });
-    if (answer.value) await this.showMethods();
+    let answer: boolean = await ConsoleHandler.toggle("Back to overview?", "yes", "no");
+    if (answer) await this.showMethods();
     else process.exit(22);
   }
-  private async handleUserAnswer(_answer: Answers<string>): Promise<void> {
-    switch (_answer.value) {
+  private async handleUserAnswer(_answer: string): Promise<void> {
+    switch (_answer) {
       case "1":
         await App.user.showPopularSurveys();
         break;
@@ -79,8 +66,8 @@ export class App {
     }
     await this.goNext();
   }
-  private async handleRegisteredUserAnswer(_answer: Answers<string>): Promise<void> {
-    switch (_answer.value) {
+  private async handleRegisteredUserAnswer(_answer: string): Promise<void> {
+    switch (_answer) {
       case "1":
         await App.user.showPopularSurveys();
         break;

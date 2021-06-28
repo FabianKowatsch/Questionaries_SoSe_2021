@@ -1,5 +1,5 @@
-import prompts, { Answers } from "prompts";
 import { AbstractUser } from "./abstracts/AbstractUser";
+import { ConsoleHandler } from "./ConsoleHandler";
 import { Survey } from "./Survey";
 
 export class RegisteredUser extends AbstractUser {
@@ -12,13 +12,9 @@ export class RegisteredUser extends AbstractUser {
   }
 
   public async createSurvey(): Promise<void> {
-    let title: Answers<string> = await prompts({
-      type: "text",
-      name: "value",
-      message: "Enter the title of your survey: "
-    });
-    let survey: Survey = new Survey(title.value, this.username);
-    await survey.addTimeSpan();
+    let title: string = await ConsoleHandler.text("Enter a question you want to add: ");
+    let survey: Survey = new Survey(title, this.username);
+    await survey.setTimeSpan();
     await survey.addQuestion();
   }
 
