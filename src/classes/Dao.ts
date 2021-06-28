@@ -4,6 +4,7 @@ import { NullStatistic } from "./NullStatistic";
 import { Survey } from "./Survey";
 import { AbstractStatistic } from "./abstracts/AbstractStatistic";
 import { AbstractSurvey } from "./abstracts/AbstractSurvey";
+import { RegisteredUser } from "./RegisteredUser";
 export class Dao {
   private static _instance: Dao;
   private constructor() {}
@@ -25,7 +26,6 @@ export class Dao {
     let statisticArray: AbstractStatistic[] = this.getAllStatistics();
     statisticArray.forEach((statistic) => {
       if (statistic.uuid === _statistic.uuid) {
-        statistic.users = _statistic.users;
         statistic.questions = _statistic.questions;
         statistic.completedCounter = _statistic.completedCounter;
       }
@@ -66,5 +66,33 @@ export class Dao {
     let surveyArray: AbstractSurvey[] = this.getAllSurveys();
     surveyArray.push(_survey);
     FileHandler.getInstance().writeFile("../data/surveys.json", surveyArray);
+  }
+  public getAllUsers(): RegisteredUser[] {
+    return FileHandler.getInstance().readArrayFile("../data/users.json");
+  }
+
+  public addUser(_user: RegisteredUser): void {
+    let userArray: RegisteredUser[] = this.getAllUsers();
+    userArray.push(_user);
+    FileHandler.getInstance().writeFile("../data/users.json", userArray);
+  }
+
+  public getUser(_username: string): RegisteredUser {
+    let userArray: RegisteredUser[] = this.getAllUsers();
+    for (let user of userArray) {
+      if (user.username == _username) return user;
+    }
+    return userArray[0];
+  }
+
+  public updateUser(_user: RegisteredUser): void {
+    let userArray: RegisteredUser[] = this.getAllUsers();
+    userArray.forEach((user) => {
+      if (user.username === _user.username) {
+        user.completedSurveys = _user.completedSurveys;
+        user.createdSurveys = _user.createdSurveys;
+      }
+    });
+    FileHandler.getInstance().writeFile("../data/users.json", userArray);
   }
 }

@@ -5,13 +5,11 @@ const AbstractStatistic_1 = require("./abstracts/AbstractStatistic");
 class NullStatistic extends AbstractStatistic_1.AbstractStatistic {
     uuid;
     questions;
-    users;
     completedCounter;
     constructor() {
         super();
         this.uuid = "0";
         this.questions = new Array();
-        this.users = new Array();
         this.completedCounter = 0;
     }
 }

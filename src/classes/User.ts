@@ -5,7 +5,6 @@ import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 import { AbstractUser } from "./abstracts/AbstractUser";
 import { App } from "./App";
 import { Dao } from "./Dao";
-import { FileHandler } from "./FileHandler";
 import { Question } from "./Question";
 import { RegisteredUser } from "./RegisteredUser";
 import sha256 from "crypto-js/sha256";
@@ -13,8 +12,10 @@ import { ConsoleHandler } from "./ConsoleHandler";
 
 export class User extends AbstractUser {
   private static _instance: User;
+  public completedSurveys: string[];
   private constructor() {
     super();
+    this.completedSurveys = new Array<string>();
   }
   public static getInstance(): User {
     return User._instance || (this._instance = new this());
@@ -51,17 +52,26 @@ export class User extends AbstractUser {
     }
   }
 
-  public watchGlobalStats(): void {
-    return;
+  public async watchGlobalStats(): Promise<void> {
+    let completedSurveyCounter: number = this.completedSurveys.length;
+    if (completedSurveyCounter === 0) {
+      console.log("You didnt complete any surveys yet.");
+    } else {
+      console.log(`You completed ${completedSurveyCounter} surveys so far:`);
+      this.completedSurveys.forEach((id) => {
+        let name: string = Dao.getInstance().getSurvey(id).title;
+        console.log(name);
+      });
+    }
   }
   public async login(): Promise<void> {
-    let userArray: RegisteredUser[] = FileHandler.getInstance().readArrayFile("../data/users.json");
+    let userArray: RegisteredUser[] = Dao.getInstance().getAllUsers();
     let username: string = await ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
     let password: string = await ConsoleHandler.password("Enter your password (minimum of 4 characters): ");
     let pwd: CryptoJS.lib.WordArray = sha256(password);
     password = pwd.toString();
     if (this.isMatchingUser(username, userArray, password)) {
-      let registeredUser: RegisteredUser = new RegisteredUser(username, password);
+      let registeredUser: RegisteredUser = new RegisteredUser(username, password, false);
       App.user = registeredUser;
       console.log("You successfully logged in! ");
     } else {
@@ -70,7 +80,7 @@ export class User extends AbstractUser {
     }
   }
   public async register(): Promise<void> {
-    let userArray: RegisteredUser[] = FileHandler.getInstance().readArrayFile("../data/users.json");
+    let userArray: RegisteredUser[] = Dao.getInstance().getAllUsers();
 
     let username: string = await await ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
 
@@ -88,10 +98,9 @@ export class User extends AbstractUser {
     }
     let pwd: CryptoJS.lib.WordArray = sha256(password);
     password = pwd.toString();
-    let registeredUser: RegisteredUser = new RegisteredUser(username, password);
+    let registeredUser: RegisteredUser = new RegisteredUser(username, password, true);
     App.user = registeredUser;
-    userArray.push(registeredUser);
-    FileHandler.getInstance().writeFile("../data/users.json", userArray);
+    Dao.getInstance().addUser(registeredUser);
     console.log("You have successfully registered! ");
   }
   private async startSurvey(_uuid: string): Promise<void> {
@@ -123,10 +132,8 @@ export class User extends AbstractUser {
       let chosenAnswer: Answer = _statistic.questions[index].answers[chosenAnswerIndex];
       chosenAnswer.count++;
     }
-    if (App.user instanceof RegisteredUser) {
-      _statistic.users.push(App.user.username);
-    }
     _statistic.completedCounter++;
+    this.completedSurveys.push(_statistic.uuid);
     Dao.getInstance().updateStatistic(_statistic);
   }
 

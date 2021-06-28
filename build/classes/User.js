@@ -7,14 +7,15 @@ exports.User = void 0;
 const AbstractUser_1 = require("./abstracts/AbstractUser");
 const App_1 = require("./App");
 const Dao_1 = require("./Dao");
-const FileHandler_1 = require("./FileHandler");
 const RegisteredUser_1 = require("./RegisteredUser");
 const sha256_1 = __importDefault(require("crypto-js/sha256"));
 const ConsoleHandler_1 = require("./ConsoleHandler");
 class User extends AbstractUser_1.AbstractUser {
     static _instance;
+    completedSurveys;
     constructor() {
         super();
+        this.completedSurveys = new Array();
     }
     static getInstance() {
         return User._instance || (this._instance = new this());
@@ -47,17 +48,27 @@ class User extends AbstractUser_1.AbstractUser {
                 break;
         }
     }
-    watchGlobalStats() {
-        return;
+    async watchGlobalStats() {
+        let completedSurveyCounter = this.completedSurveys.length;
+        if (completedSurveyCounter === 0) {
+            console.log("You didnt complete any surveys yet.");
+        }
+        else {
+            console.log(`You completed ${completedSurveyCounter} surveys so far:`);
+            this.completedSurveys.forEach((id) => {
+                let name = Dao_1.Dao.getInstance().getSurvey(id).title;
+                console.log(name);
+            });
+        }
     }
     async login() {
-        let userArray = FileHandler_1.FileHandler.getInstance().readArrayFile("../data/users.json");
+        let userArray = Dao_1.Dao.getInstance().getAllUsers();
         let username = await ConsoleHandler_1.ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
         let password = await ConsoleHandler_1.ConsoleHandler.password("Enter your password (minimum of 4 characters): ");
         let pwd = sha256_1.default(password);
         password = pwd.toString();
         if (this.isMatchingUser(username, userArray, password)) {
-            let registeredUser = new RegisteredUser_1.RegisteredUser(username, password);
+            let registeredUser = new RegisteredUser_1.RegisteredUser(username, password, false);
             App_1.App.user = registeredUser;
             console.log("You successfully logged in! ");
         }
@@ -67,7 +78,7 @@ class User extends AbstractUser_1.AbstractUser {
         }
     }
     async register() {
-        let userArray = FileHandler_1.FileHandler.getInstance().readArrayFile("../data/users.json");
+        let userArray = Dao_1.Dao.getInstance().getAllUsers();
         let username = await await ConsoleHandler_1.ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
         while (!this.isValidUsername(username) || this.isMatchingUser(username, userArray)) {
             if (!this.isValidUsername(username))
@@ -83,10 +94,9 @@ class User extends AbstractUser_1.AbstractUser {
         }
         let pwd = sha256_1.default(password);
         password = pwd.toString();
-        let registeredUser = new RegisteredUser_1.RegisteredUser(username, password);
+        let registeredUser = new RegisteredUser_1.RegisteredUser(username, password, true);
         App_1.App.user = registeredUser;
-        userArray.push(registeredUser);
-        FileHandler_1.FileHandler.getInstance().writeFile("../data/users.json", userArray);
+        Dao_1.Dao.getInstance().addUser(registeredUser);
         console.log("You have successfully registered! ");
     }
     async startSurvey(_uuid) {
@@ -118,10 +128,8 @@ class User extends AbstractUser_1.AbstractUser {
             let chosenAnswer = _statistic.questions[index].answers[chosenAnswerIndex];
             chosenAnswer.count++;
         }
-        if (App_1.App.user instanceof RegisteredUser_1.RegisteredUser) {
-            _statistic.users.push(App_1.App.user.username);
-        }
         _statistic.completedCounter++;
+        this.completedSurveys.push(_statistic.uuid);
         Dao_1.Dao.getInstance().updateStatistic(_statistic);
     }
     isValidUsername(_username) {

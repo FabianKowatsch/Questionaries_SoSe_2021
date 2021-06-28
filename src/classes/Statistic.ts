@@ -5,14 +5,11 @@ import { Question } from "./Question";
 export class Statistic extends AbstractStatistic {
   public uuid: string;
   public questions: Question[];
-  public users: string[];
   public completedCounter: number;
 
   constructor(_uuid: string, _questions: Question[]) {
     super();
     this.uuid = _uuid;
-    this.questions = _questions;
-    this.users = new Array<string>();
     this.completedCounter = 0;
   }
 }

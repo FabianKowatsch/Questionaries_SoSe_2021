@@ -23,7 +23,6 @@ class Dao {
         let statisticArray = this.getAllStatistics();
         statisticArray.forEach((statistic) => {
             if (statistic.uuid === _statistic.uuid) {
-                statistic.users = _statistic.users;
                 statistic.questions = _statistic.questions;
                 statistic.completedCounter = _statistic.completedCounter;
             }
@@ -60,6 +59,32 @@ class Dao {
         let surveyArray = this.getAllSurveys();
         surveyArray.push(_survey);
         FileHandler_1.FileHandler.getInstance().writeFile("../data/surveys.json", surveyArray);
+    }
+    getAllUsers() {
+        return FileHandler_1.FileHandler.getInstance().readArrayFile("../data/users.json");
+    }
+    addUser(_user) {
+        let userArray = this.getAllUsers();
+        userArray.push(_user);
+        FileHandler_1.FileHandler.getInstance().writeFile("../data/users.json", userArray);
+    }
+    getUser(_username) {
+        let userArray = this.getAllUsers();
+        for (let user of userArray) {
+            if (user.username == _username)
+                return user;
+        }
+        return userArray[0];
+    }
+    updateUser(_user) {
+        let userArray = this.getAllUsers();
+        userArray.forEach((user) => {
+            if (user.username === _user.username) {
+                user.completedSurveys = _user.completedSurveys;
+                user.createdSurveys = _user.createdSurveys;
+            }
+        });
+        FileHandler_1.FileHandler.getInstance().writeFile("../data/users.json", userArray);
     }
 }
 exports.Dao = Dao;

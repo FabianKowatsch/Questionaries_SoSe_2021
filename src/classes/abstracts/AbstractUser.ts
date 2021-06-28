@@ -1,4 +1,5 @@
 export abstract class AbstractUser {
+  abstract completedSurveys: string[];
   abstract showPopularSurveys(): void;
 
   abstract searchSurvey(): void;
