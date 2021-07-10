@@ -7,12 +7,10 @@ class NullSurvey extends AbstractSurvey_1.AbstractSurvey {
     uuid;
     timeSpan;
     questions;
-    creator;
     constructor() {
         super();
         this.title = "null";
         this.questions = new Array();
-        this.creator = "null";
         this.uuid = "null";
         this.timeSpan = { start: new Date(), end: new Date() };
     }

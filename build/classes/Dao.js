@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dao = void 0;
 const FileHandler_1 = require("./FileHandler");
 const NullStatistic_1 = require("./NullStatistic");
+const NullSurvey_1 = require("./NullSurvey");
 class Dao {
     static _instance;
     constructor() { }
@@ -11,6 +12,8 @@ class Dao {
     }
     getAllStatistics() {
         let statisticArray = FileHandler_1.FileHandler.getInstance().readArrayFile("../data/statistics.json");
+        if (statisticArray.length === 0)
+            return [new NullStatistic_1.NullStatistic()];
         return statisticArray;
     }
     getStatistic(_id) {
@@ -37,10 +40,13 @@ class Dao {
     getSurvey(_id) {
         let surveyArray = this.getAllSurveys();
         let survey = surveyArray.filter((survey) => survey.uuid == _id)[0];
+        survey = survey !== undefined ? survey : new NullSurvey_1.NullSurvey();
         return survey;
     }
     getAllSurveys() {
         let surveyArray = FileHandler_1.FileHandler.getInstance().readArrayFile("../data/surveys.json");
+        if (surveyArray.length === 0)
+            return [new NullSurvey_1.NullSurvey()];
         return surveyArray;
     }
     getMostPopularSurveys() {

@@ -6,12 +6,10 @@ export class NullSurvey extends AbstractSurvey {
   public uuid: string;
   public timeSpan: TimeSpan;
   public questions: Question[];
-  public creator: string;
   constructor() {
     super();
     this.title = "null";
     this.questions = new Array<Question>();
-    this.creator = "null";
     this.uuid = "null";
     this.timeSpan = { start: new Date(), end: new Date() };
   }

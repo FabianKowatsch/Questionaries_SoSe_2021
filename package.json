@@ -9,15 +9,13 @@
     ]
   },
   "scripts": {
-    "dev": "nodemon build/main.js",
+    "test": "node build/main.js",
     "start": "node build/main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^2.0.7"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@types/crypto-js": "^4.0.1",
     "@types/node": "^14.14.44",

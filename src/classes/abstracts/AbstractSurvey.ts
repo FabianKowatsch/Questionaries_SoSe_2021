@@ -6,5 +6,4 @@ export abstract class AbstractSurvey {
   abstract uuid: string;
   abstract timeSpan: TimeSpan;
   abstract questions: Question[];
-  abstract creator: string;
 }

@@ -13,12 +13,10 @@ class Survey extends AbstractSurvey_1.AbstractSurvey {
     uuid;
     timeSpan;
     questions;
-    creator;
-    constructor(_title, _creator) {
+    constructor(_title) {
         super();
         this.title = _title;
         this.questions = new Array();
-        this.creator = _creator;
         this.uuid = uuid_1.v4();
     }
     async addQuestion() {

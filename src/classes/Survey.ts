@@ -11,12 +11,10 @@ export class Survey extends AbstractSurvey {
   public uuid: string;
   public timeSpan: TimeSpan;
   public questions: Question[];
-  public creator: string;
-  constructor(_title: string, _creator: string) {
+  constructor(_title: string) {
     super();
     this.title = _title;
     this.questions = new Array<Question>();
-    this.creator = _creator;
     this.uuid = uuidV4();
   }
   public async addQuestion(): Promise<void> {

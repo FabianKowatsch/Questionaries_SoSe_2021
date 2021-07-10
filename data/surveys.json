@@ -9,8 +9,7 @@
       { "title": "is this quiz funny?", "answers": ["yes", "no"] },
       { "title": "is this even a quiz?", "answers": ["yes", "no"] },
       { "title": "or might this be a survey?", "answers": ["yes", "no"] }
-    ],
-    "creator": "user"
+    ]
   },
   {
     "title": "this survey takes too long",
@@ -22,8 +21,7 @@
       { "title": "you sure?", "answers": ["yes", "no"] },
       { "title": "for sure?", "answers": ["yes", "no"] },
       { "title": "is this the last one?", "answers": ["yes", "no"] }
-    ],
-    "creator": "user"
+    ]
   },
   {
     "title": "surveythatisoutdated",
@@ -35,8 +33,7 @@
       { "title": "awd", "answers": ["yes", "no"] },
       { "title": "awd", "answers": ["yes", "no"] },
       { "title": "awd", "answers": ["yes", "no"] }
-    ],
-    "creator": "user"
+    ]
   },
   {
     "title": "testTime",
@@ -48,8 +45,7 @@
       { "title": "awd", "answers": ["yes", "no"] },
       { "title": "awd", "answers": ["yes", "no"] },
       { "title": "awdawdaw", "answers": ["yes", "no"] }
-    ],
-    "creator": "user"
+    ]
   },
   {
     "title": "food and stuff",
@@ -61,8 +57,7 @@
       { "title": "if you chose döner, what doesnt belong on it?", "answers": ["didnt chose döner", "kraut", "cucumber"] },
       { "title": "if you chose pizza, whats your favorite type?", "answers": ["salami", "margherita", "vegan", "fish", "didnt select it"] },
       { "title": "if you chose steak, how do you like it?", "answers": ["well done", "medium", "rare", "didnt select it"] }
-    ],
-    "creator": "user"
+    ]
   },
   {
     "title": "test",
@@ -74,7 +69,6 @@
       { "title": "question3", "answers": ["a", "b"] },
       { "title": "question4", "answers": ["a", "b"] },
       { "title": "question5", "answers": ["a", "b"] }
-    ],
-    "creator": "user"
+    ]
   }
 ]

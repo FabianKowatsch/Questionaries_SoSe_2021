@@ -24,8 +24,8 @@ class User extends AbstractUser_1.AbstractUser {
         let choices = this.createChoicesWithRestrictions(true);
         let answer = await ConsoleHandler_1.ConsoleHandler.select("Select the survey you want to participate in: ", choices);
         switch (answer) {
-            case undefined:
-                await App_1.App.getInstance().goNext();
+            case undefined || "return":
+                return;
                 break;
             default:
                 await this.startSurvey(answer);
@@ -37,11 +37,12 @@ class User extends AbstractUser_1.AbstractUser {
         let answer = await ConsoleHandler_1.ConsoleHandler.autocomplete("Type the name of the survey you want to participate in: ", choices);
         switch (answer) {
             case "disabled":
-                await this.searchSurvey();
+                console.log("the answer you chose is not available.");
+                await this.continueSearching();
                 break;
             case undefined:
-                console.log("no matches, try again");
-                await this.searchSurvey();
+                console.log("no matches, try again.");
+                await this.continueSearching();
                 break;
             default:
                 await this.startSurvey(answer);
@@ -186,7 +187,19 @@ class User extends AbstractUser_1.AbstractUser {
                 choices.push({ title: survey.title, value: survey.uuid });
             }
         });
+        if (_popularOnly) {
+            choices.push({ title: "\x1b[33mreturn to menu", value: "return" });
+        }
         return choices;
+    }
+    async continueSearching() {
+        let answer = await ConsoleHandler_1.ConsoleHandler.toggle("do you want to continue searching?", "yes", "no", true);
+        if (answer) {
+            await this.searchSurvey();
+        }
+        else {
+            await App_1.App.getInstance().goNext();
+        }
     }
 }
 exports.User = User;

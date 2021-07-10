@@ -5,6 +5,7 @@ import { Survey } from "./Survey";
 import { AbstractStatistic } from "./abstracts/AbstractStatistic";
 import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 import { RegisteredUser } from "./RegisteredUser";
+import { NullSurvey } from "./NullSurvey";
 export class Dao {
   private static _instance: Dao;
   private constructor() {}
@@ -14,6 +15,7 @@ export class Dao {
 
   public getAllStatistics(): AbstractStatistic[] {
     let statisticArray: AbstractStatistic[] = FileHandler.getInstance().readArrayFile("../data/statistics.json");
+    if (statisticArray.length === 0) return [new NullStatistic()];
     return statisticArray;
   }
   public getStatistic(_id: string): AbstractStatistic {
@@ -42,11 +44,13 @@ export class Dao {
   public getSurvey(_id: string): AbstractSurvey {
     let surveyArray: AbstractSurvey[] = this.getAllSurveys();
     let survey: AbstractSurvey = surveyArray.filter((survey) => survey.uuid == _id)[0];
+    survey = survey !== undefined ? survey : new NullSurvey();
     return survey;
   }
 
   public getAllSurveys(): AbstractSurvey[] {
     let surveyArray: AbstractSurvey[] = FileHandler.getInstance().readArrayFile("../data/surveys.json");
+    if (surveyArray.length === 0) return [new NullSurvey()];
     return surveyArray;
   }
 

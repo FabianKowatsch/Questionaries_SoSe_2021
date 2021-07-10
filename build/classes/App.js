@@ -40,7 +40,7 @@ class App {
         }
     }
     async goNext() {
-        let answer = await ConsoleHandler_1.ConsoleHandler.toggle("Back to overview?", "yes", "no");
+        let answer = await ConsoleHandler_1.ConsoleHandler.toggle("Back to overview? \x1b[31m(no will exit the program)\x1b[0m", "yes", "no");
         if (answer)
             await this.showMethods();
         else
