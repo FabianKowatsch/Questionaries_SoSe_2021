@@ -25,10 +25,12 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         }
     }
     async createSurvey() {
-        let title = await ConsoleHandler_1.ConsoleHandler.text("Enter a question you want to add: ");
+        let title = await ConsoleHandler_1.ConsoleHandler.text("Enter the title of your survey: ");
         let survey = new Survey_1.Survey(title, this.username);
         await survey.setTimeSpan();
         await survey.addQuestion();
+        this.createdSurveys.push(survey.uuid);
+        Dao_1.Dao.getInstance().updateUser(this);
     }
     showPopularSurveys() {
         return;
@@ -36,10 +38,60 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
     searchSurvey() {
         return;
     }
-    watchGlobalStats() {
-        return;
+    async watchGlobalStats() {
+        let completedSurveyCounter = this.completedSurveys.length;
+        if (completedSurveyCounter === 0) {
+            let colorYellow = "\x1b[33m";
+            console.log(colorYellow + "You didnt complete any surveys yet.");
+        }
+        else {
+            console.log(`You completed ${completedSurveyCounter} surveys in this session:`);
+            this.completedSurveys.forEach((id) => {
+                let name = Dao_1.Dao.getInstance().getSurvey(id).title;
+                console.log(name);
+            });
+        }
     }
-    watchSpecificStats() {
+    async watchCreatedSurveys() {
+        let choices = new Array();
+        let surveyArray = new Array();
+        let statisticArray = new Array();
+        let colorYellow = "\x1b[33m";
+        if (this.createdSurveys.length === 0) {
+            console.log(colorYellow + "you havent created any surveys yet");
+            return;
+        }
+        this.createdSurveys.forEach((uuid) => {
+            surveyArray.push(Dao_1.Dao.getInstance().getSurvey(uuid));
+            statisticArray.push(Dao_1.Dao.getInstance().getStatistic(uuid));
+        });
+        for (let index = 0; index < surveyArray.length; index++) {
+            let completedCounter = statisticArray[index].completedCounter;
+            if (completedCounter > 0) {
+                choices.push({
+                    title: surveyArray[index].title + colorYellow + `, completed ${completedCounter} times`,
+                    value: index
+                });
+            }
+        }
+        if (choices.length === 0) {
+            console.log(colorYellow + "your surveys havent been completed yet");
+            return;
+        }
+        let selectedSurveyIndex = parseInt(await ConsoleHandler_1.ConsoleHandler.select("choose one of your surveys: ", choices));
+        await this.watchSurveyStats(surveyArray[selectedSurveyIndex], statisticArray[selectedSurveyIndex]);
+    }
+    async watchSurveyStats(_survey, _statistic) {
+        let colorYellow = "\x1b[33m";
+        let colorCyan = "\x1b[96m";
+        console.log(`${colorCyan}title: ${_survey.title}`);
+        for (let questionIndex = 0; questionIndex < _survey.questions.length; questionIndex++) {
+            let question = _survey.questions[questionIndex];
+            console.log(`${colorYellow}${questionIndex + 1}. ${question.title}`);
+            for (let answerIndex = 0; answerIndex < question.answers.length; answerIndex++) {
+                ConsoleHandler_1.ConsoleHandler.logAnswer(answerIndex, question.answers[answerIndex], _statistic.answers[questionIndex][answerIndex], _statistic.completedCounter);
+            }
+        }
         return;
     }
 }

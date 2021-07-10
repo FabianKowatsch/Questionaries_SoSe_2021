@@ -51,10 +51,11 @@ class User extends AbstractUser_1.AbstractUser {
     async watchGlobalStats() {
         let completedSurveyCounter = this.completedSurveys.length;
         if (completedSurveyCounter === 0) {
-            console.log("You didnt complete any surveys yet.");
+            let colorYellow = "\x1b[33m";
+            console.log(colorYellow + "You didnt complete any surveys yet.");
         }
         else {
-            console.log(`You completed ${completedSurveyCounter} surveys so far:`);
+            console.log(`You completed ${completedSurveyCounter} surveys in this session:`);
             this.completedSurveys.forEach((id) => {
                 let name = Dao_1.Dao.getInstance().getSurvey(id).title;
                 console.log(name);
@@ -125,7 +126,7 @@ class User extends AbstractUser_1.AbstractUser {
     updateStatistics(_answers, _statistic) {
         for (let index = 0; index < _statistic.answers.length; index++) {
             let chosenAnswerIndex = parseInt(_answers[index]);
-            _statistic.answers[index][chosenAnswerIndex] = _statistic.answers[index][chosenAnswerIndex]++;
+            _statistic.answers[index][chosenAnswerIndex]++;
         }
         _statistic.completedCounter++;
         this.completedSurveys.push(_statistic.uuid);

@@ -29,6 +29,7 @@ export class ConsoleHandler {
       name: "value",
       message: _message
     });
+    if (answer.value === null) return " ";
     return answer.value;
   }
 
@@ -38,6 +39,7 @@ export class ConsoleHandler {
       name: "value",
       message: _message
     });
+    if (password.value === null) return "";
     return password.value;
   }
 
@@ -72,5 +74,18 @@ export class ConsoleHandler {
       validate: (date) => (timeStart.value > date ? "Make sure your selected date is after your previous date" : true)
     });
     return { start: timeStart.value, end: timeEnd.value };
+  }
+
+  public static logAnswer(_index: number, _answer: string, _counter: number, _total: number): void {
+    let colorDefault: string = "\x1b[0m";
+    let percentage: number = Math.round((_counter / _total) * 100);
+    let barArray: string[] = new Array<string>(10);
+    for (let index: number = 0; index < barArray.length; index++) {
+      if (index < Math.round(percentage / 10)) {
+        barArray[index] = "\u25AE";
+      } else barArray[index] = "\u25AF";
+    }
+    let bar: string = barArray.join("");
+    console.log(`${colorDefault}${_index + 1}. ${_answer}\t${bar}  ${percentage}% | ${_counter}`);
   }
 }

@@ -33,7 +33,7 @@ export class App {
         { title: "Search for Survey", value: "2" },
         { title: "Create a new Survey", value: "3" },
         { title: "Watch personal Statistics", value: "4" },
-        { title: "Watch Statistic for Created Surveys", value: "5" }
+        { title: "Watch Statistic for created Surveys", value: "5" }
       ];
       answer = await ConsoleHandler.select("Which function do you want to use? ", choices);
       await this.handleRegisteredUserAnswer(answer);
@@ -81,7 +81,7 @@ export class App {
         await App.user.watchGlobalStats();
         break;
       case "5":
-        await App.user.watchSpecificStats();
+        await App.user.watchCreatedSurveys();
         break;
       default:
         break;

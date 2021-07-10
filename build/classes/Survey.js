@@ -47,9 +47,12 @@ class Survey extends AbstractSurvey_1.AbstractSurvey {
     }
     upload() {
         Dao_1.Dao.getInstance().addSurvey(this);
-        let answers;
+        let answers = new Array();
         this.questions.forEach((question) => {
             let initial = new Array(question.answers.length);
+            for (let index = 0; index < initial.length; index++) {
+                initial[index] = 0;
+            }
             answers.push(initial);
         });
         Dao_1.Dao.getInstance().addStatistic(new Statistic_1.Statistic(this.uuid, answers));

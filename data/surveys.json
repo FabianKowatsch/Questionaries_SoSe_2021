@@ -4,26 +4,11 @@
     "uuid": "a7b39f31-8eae-46e5-bcaa-77e1ab0f9df2",
     "timeSpan": { "start": "2021-06-25T15:33:08.179Z", "end": "2021-06-29T15:33:10.587Z" },
     "questions": [
-      {
-        "title": "what season is it?",
-        "answers": ["summer", "autumn", "winter", "spring"]
-      },
-      {
-        "title": "whats your favorite food?",
-        "answers": ["pizza", "döner"]
-      },
-      {
-        "title": "is this quiz funny?",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "is this even a quiz?",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "or might this be a survey?",
-        "answers": ["yes", "no"]
-      }
+      { "title": "what season is it?", "answers": ["summer", "autumn", "winter", "spring"] },
+      { "title": "whats your favorite food?", "answers": ["pizza", "döner"] },
+      { "title": "is this quiz funny?", "answers": ["yes", "no"] },
+      { "title": "is this even a quiz?", "answers": ["yes", "no"] },
+      { "title": "or might this be a survey?", "answers": ["yes", "no"] }
     ],
     "creator": "user"
   },
@@ -32,26 +17,11 @@
     "uuid": "0dac3c5b-a02f-460e-b522-6d39599ec9de",
     "timeSpan": { "start": "2021-06-27T15:40:57.668Z", "end": "2021-07-18T15:40:59.739Z" },
     "questions": [
-      {
-        "title": "do you want to answer this?",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "really?",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "you sure?",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "for sure?",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "is this the last one?",
-        "answers": ["yes", "no"]
-      }
+      { "title": "do you want to answer this?", "answers": ["yes", "no"] },
+      { "title": "really?", "answers": ["yes", "no"] },
+      { "title": "you sure?", "answers": ["yes", "no"] },
+      { "title": "for sure?", "answers": ["yes", "no"] },
+      { "title": "is this the last one?", "answers": ["yes", "no"] }
     ],
     "creator": "user"
   },
@@ -60,26 +30,11 @@
     "uuid": "a3dfb916-9c17-4848-af18-60858baa7778",
     "timeSpan": { "start": "2021-07-03T16:16:33.412Z", "end": "2021-07-04T16:16:42.260Z" },
     "questions": [
-      {
-        "title": "k?",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "awd",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "awd",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "awd",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "awd",
-        "answers": ["yes", "no"]
-      }
+      { "title": "k?", "answers": ["yes", "no"] },
+      { "title": "awd", "answers": ["yes", "no"] },
+      { "title": "awd", "answers": ["yes", "no"] },
+      { "title": "awd", "answers": ["yes", "no"] },
+      { "title": "awd", "answers": ["yes", "no"] }
     ],
     "creator": "user"
   },
@@ -88,26 +43,37 @@
     "uuid": "7a06f38d-f150-468b-bd40-23820e35e60a",
     "timeSpan": { "start": "2021-06-26T16:43:34.342Z", "end": "2021-06-27T16:43:35.844Z" },
     "questions": [
-      {
-        "title": "awd",
-        "answers": ["yes", "no", "maybe"]
-      },
-      {
-        "title": "awd",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "awd",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "awd",
-        "answers": ["yes", "no"]
-      },
-      {
-        "title": "awdawdaw",
-        "answers": ["yes", "no"]
-      }
+      { "title": "awd", "answers": ["yes", "no", "maybe"] },
+      { "title": "awd", "answers": ["yes", "no"] },
+      { "title": "awd", "answers": ["yes", "no"] },
+      { "title": "awd", "answers": ["yes", "no"] },
+      { "title": "awdawdaw", "answers": ["yes", "no"] }
+    ],
+    "creator": "user"
+  },
+  {
+    "title": "food and stuff",
+    "uuid": "c677bbc9-4acf-40d7-892b-43222d28e150",
+    "timeSpan": { "start": "2021-07-09T09:35:43.508Z", "end": "2021-07-24T09:35:49.466Z" },
+    "questions": [
+      { "title": "what is your favorite food type?", "answers": ["pizza", "pasta", "döner", "steak"] },
+      { "title": "if you chose pasta, whats your favorite sauce?", "answers": ["didnt chose pasta", "tomato", "bolognese"] },
+      { "title": "if you chose döner, what doesnt belong on it?", "answers": ["didnt chose döner", "kraut", "cucumber"] },
+      { "title": "if you chose pizza, whats your favorite type?", "answers": ["salami", "margherita", "vegan", "fish", "didnt select it"] },
+      { "title": "if you chose steak, how do you like it?", "answers": ["well done", "medium", "rare", "didnt select it"] }
+    ],
+    "creator": "user"
+  },
+  {
+    "title": "test",
+    "uuid": "09397d83-2f2d-410b-9059-207fe74ab106",
+    "timeSpan": { "start": "2021-07-09T10:00:24.145Z", "end": "2021-07-12T10:00:30.328Z" },
+    "questions": [
+      { "title": "question", "answers": ["a", "b"] },
+      { "title": "question2", "answers": ["a", "b"] },
+      { "title": "question3", "answers": ["a", "b"] },
+      { "title": "question4", "answers": ["a", "b"] },
+      { "title": "question5", "answers": ["a", "b"] }
     ],
     "creator": "user"
   }

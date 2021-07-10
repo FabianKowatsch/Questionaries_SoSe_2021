@@ -1,3 +1,6 @@
+import { AbstractStatistic } from "./AbstractStatistic";
+import { AbstractSurvey } from "./AbstractSurvey";
+
 export abstract class AbstractUser {
   abstract completedSurveys: string[];
   abstract showPopularSurveys(): void;
@@ -6,10 +9,12 @@ export abstract class AbstractUser {
 
   abstract watchGlobalStats(): void;
 
-  watchSpecificStats(): void {
+  watchCreatedSurveys(): void {
     return;
   }
-
+  watchSurveyStats(_survey: AbstractSurvey, _statistic: AbstractStatistic): void {
+    return;
+  }
   createSurvey(): void {
     return;
   }

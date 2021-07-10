@@ -2,7 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractUser = void 0;
 class AbstractUser {
-    watchSpecificStats() {
+    watchCreatedSurveys() {
+        return;
+    }
+    watchSurveyStats(_survey, _statistic) {
         return;
     }
     createSurvey() {

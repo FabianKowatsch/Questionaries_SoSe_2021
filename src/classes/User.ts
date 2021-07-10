@@ -54,9 +54,10 @@ export class User extends AbstractUser {
   public async watchGlobalStats(): Promise<void> {
     let completedSurveyCounter: number = this.completedSurveys.length;
     if (completedSurveyCounter === 0) {
-      console.log("You didnt complete any surveys yet.");
+      let colorYellow: string = "\x1b[33m";
+      console.log(colorYellow + "You didnt complete any surveys yet.");
     } else {
-      console.log(`You completed ${completedSurveyCounter} surveys so far:`);
+      console.log(`You completed ${completedSurveyCounter} surveys in this session:`);
       this.completedSurveys.forEach((id) => {
         let name: string = Dao.getInstance().getSurvey(id).title;
         console.log(name);
@@ -128,7 +129,7 @@ export class User extends AbstractUser {
   private updateStatistics(_answers: string[], _statistic: AbstractStatistic): void {
     for (let index: number = 0; index < _statistic.answers.length; index++) {
       let chosenAnswerIndex: number = parseInt(_answers[index]);
-      _statistic.answers[index][chosenAnswerIndex] = _statistic.answers[index][chosenAnswerIndex]++;
+      _statistic.answers[index][chosenAnswerIndex]++;
     }
     _statistic.completedCounter++;
     this.completedSurveys.push(_statistic.uuid);

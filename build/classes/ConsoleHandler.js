@@ -32,6 +32,8 @@ class ConsoleHandler {
             name: "value",
             message: _message
         });
+        if (answer.value === null)
+            return " ";
         return answer.value;
     }
     static async password(_message) {
@@ -40,6 +42,8 @@ class ConsoleHandler {
             name: "value",
             message: _message
         });
+        if (password.value === null)
+            return "";
         return password.value;
     }
     static async toggle(_message, _active, _inactive, _initial = true) {
@@ -71,6 +75,20 @@ class ConsoleHandler {
             validate: (date) => (timeStart.value > date ? "Make sure your selected date is after your previous date" : true)
         });
         return { start: timeStart.value, end: timeEnd.value };
+    }
+    static logAnswer(_index, _answer, _counter, _total) {
+        let colorDefault = "\x1b[0m";
+        let percentage = Math.round((_counter / _total) * 100);
+        let barArray = new Array(10);
+        for (let index = 0; index < barArray.length; index++) {
+            if (index < Math.round(percentage / 10)) {
+                barArray[index] = "\u25AE";
+            }
+            else
+                barArray[index] = "\u25AF";
+        }
+        let bar = barArray.join("");
+        console.log(`${colorDefault}${_index + 1}. ${_answer}\t${bar}  ${percentage}% | ${_counter}`);
     }
 }
 exports.ConsoleHandler = ConsoleHandler;
