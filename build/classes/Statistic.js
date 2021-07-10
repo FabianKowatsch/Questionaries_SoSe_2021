@@ -5,12 +5,13 @@ const AbstractStatistic_1 = require("./abstracts/AbstractStatistic");
 //import { v4 as uuidV4 } from "uuid";
 class Statistic extends AbstractStatistic_1.AbstractStatistic {
     uuid;
-    questions;
+    answers;
     completedCounter;
-    constructor(_uuid, _questions) {
+    constructor(_uuid, _answers) {
         super();
         this.uuid = _uuid;
         this.completedCounter = 0;
+        this.answers = _answers;
     }
 }
 exports.Statistic = Statistic;

@@ -1,5 +1,4 @@
 import { Choice } from "prompts";
-import { Answer } from "../types/Answer.type";
 import { AbstractStatistic } from "./abstracts/AbstractStatistic";
 import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 import { AbstractUser } from "./abstracts/AbstractUser";
@@ -122,15 +121,14 @@ export class User extends AbstractUser {
   private toPromptChoices(_question: Question): Choice[] {
     let choices: Choice[] = new Array<Choice>();
     _question.answers.forEach((answer) => {
-      choices.push({ title: answer.name });
+      choices.push({ title: answer });
     });
     return choices;
   }
   private updateStatistics(_answers: string[], _statistic: AbstractStatistic): void {
-    for (let index: number = 0; index < _statistic.questions.length; index++) {
+    for (let index: number = 0; index < _statistic.answers.length; index++) {
       let chosenAnswerIndex: number = parseInt(_answers[index]);
-      let chosenAnswer: Answer = _statistic.questions[index].answers[chosenAnswerIndex];
-      chosenAnswer.count++;
+      _statistic.answers[index][chosenAnswerIndex] = _statistic.answers[index][chosenAnswerIndex]++;
     }
     _statistic.completedCounter++;
     this.completedSurveys.push(_statistic.uuid);
@@ -179,7 +177,7 @@ export class User extends AbstractUser {
         });
       } else if (dateEnd.getTime() <= Date.now()) {
         choices.push({
-          title: flagRed + survey.title + (_popularOnly ? ` (locked, starting date: ${survey.timeSpan.start})` : ""),
+          title: flagRed + survey.title + (_popularOnly ? ` (locked, terminating date: ${survey.timeSpan.end})` : ""),
           value: "disabled",
           disabled: true,
           description: `locked, terminating date: ${survey.timeSpan.end}`

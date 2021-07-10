@@ -6,40 +6,23 @@
     "questions": [
       {
         "title": "what season is it?",
-        "answers": [
-          { "name": "summer", "count": 0 },
-          { "name": "autumn", "count": 0 },
-          { "name": "winter", "count": 0 },
-          { "name": "spring", "count": 0 }
-        ]
+        "answers": ["summer", "autumn", "winter", "spring"]
       },
       {
         "title": "whats your favorite food?",
-        "answers": [
-          { "name": "pizza", "count": 0 },
-          { "name": "döner", "count": 0 }
-        ]
+        "answers": ["pizza", "döner"]
       },
       {
         "title": "is this quiz funny?",
-        "answers": [
-          { "name": "yes", "count": 0 },
-          { "name": "no", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "is this even a quiz?",
-        "answers": [
-          { "name": "yes", "count": 0 },
-          { "name": "no", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "or might this be a survey?",
-        "answers": [
-          { "name": "yes", "count": 0 },
-          { "name": "no", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       }
     ],
     "creator": "user"
@@ -51,38 +34,23 @@
     "questions": [
       {
         "title": "do you want to answer this?",
-        "answers": [
-          { "name": "yes", "count": 0 },
-          { "name": "no", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "really?",
-        "answers": [
-          { "name": "yes", "count": 0 },
-          { "name": "no", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "you sure?",
-        "answers": [
-          { "name": "yes", "count": 0 },
-          { "name": "no", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "for sure?",
-        "answers": [
-          { "name": "yes", "count": 0 },
-          { "name": "no", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "is this the last one?",
-        "answers": [
-          { "name": "yes", "count": 0 },
-          { "name": "no", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       }
     ],
     "creator": "user"
@@ -93,39 +61,24 @@
     "timeSpan": { "start": "2021-07-03T16:16:33.412Z", "end": "2021-07-04T16:16:42.260Z" },
     "questions": [
       {
-        "title": "aw",
-        "answers": [
-          { "name": "aw", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "title": "k?",
+        "answers": ["yes", "no"]
       },
       {
         "title": "awd",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "awd",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "awd",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "awd",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       }
     ],
     "creator": "user"
@@ -137,39 +90,23 @@
     "questions": [
       {
         "title": "awd",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 },
-          { "name": "aawd", "count": 0 }
-        ]
+        "answers": ["yes", "no", "maybe"]
       },
       {
         "title": "awd",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "awd",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "awd",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       },
       {
         "title": "awdawdaw",
-        "answers": [
-          { "name": "awd", "count": 0 },
-          { "name": "awd", "count": 0 }
-        ]
+        "answers": ["yes", "no"]
       }
     ],
     "creator": "user"

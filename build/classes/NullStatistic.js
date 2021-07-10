@@ -4,12 +4,12 @@ exports.NullStatistic = void 0;
 const AbstractStatistic_1 = require("./abstracts/AbstractStatistic");
 class NullStatistic extends AbstractStatistic_1.AbstractStatistic {
     uuid;
-    questions;
+    answers;
     completedCounter;
     constructor() {
         super();
         this.uuid = "0";
-        this.questions = new Array();
+        this.answers = new Array();
         this.completedCounter = 0;
     }
 }

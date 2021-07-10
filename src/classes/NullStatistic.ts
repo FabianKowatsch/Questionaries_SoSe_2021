@@ -1,13 +1,12 @@
 import { AbstractStatistic } from "./abstracts/AbstractStatistic";
-import { Question } from "./Question";
 export class NullStatistic extends AbstractStatistic {
   public uuid: string;
-  public questions: Question[];
+  public answers: number[][];
   public completedCounter: number;
   constructor() {
     super();
     this.uuid = "0";
-    this.questions = new Array<Question>();
+    this.answers = new Array<number[]>();
     this.completedCounter = 0;
   }
 }

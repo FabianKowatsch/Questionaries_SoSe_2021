@@ -1,18 +1,16 @@
-import { Answer } from "../types/Answer.type";
 import { ConsoleHandler } from "./ConsoleHandler";
 export class Question {
   private static _minAnswerAmount: number = 2;
   private static _maxAnswerAmount: number = 10;
   public title: string;
-  public answers: Answer[];
+  public answers: string[];
   constructor(_title: string) {
     this.title = _title;
-    this.answers = new Array<Answer>();
+    this.answers = new Array<string>();
   }
 
   public async addAnswer(): Promise<void> {
-    let name: string = await ConsoleHandler.text("Enter an answer: ");
-    let answer: Answer = { name: name, count: 0 };
+    let answer: string = await ConsoleHandler.text("Enter an answer: ");
     this.answers.push(answer);
     if (this.answers.length < Question._minAnswerAmount) {
       await this.addAnswer();

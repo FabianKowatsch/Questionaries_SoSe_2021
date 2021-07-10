@@ -23,7 +23,7 @@ class Dao {
         let statisticArray = this.getAllStatistics();
         statisticArray.forEach((statistic) => {
             if (statistic.uuid === _statistic.uuid) {
-                statistic.questions = _statistic.questions;
+                statistic.answers = _statistic.answers;
                 statistic.completedCounter = _statistic.completedCounter;
             }
         });

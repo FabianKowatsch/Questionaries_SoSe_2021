@@ -12,8 +12,7 @@ class Question {
         this.answers = new Array();
     }
     async addAnswer() {
-        let name = await ConsoleHandler_1.ConsoleHandler.text("Enter an answer: ");
-        let answer = { name: name, count: 0 };
+        let answer = await ConsoleHandler_1.ConsoleHandler.text("Enter an answer: ");
         this.answers.push(answer);
         if (this.answers.length < Question._minAnswerAmount) {
             await this.addAnswer();

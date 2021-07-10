@@ -118,15 +118,14 @@ class User extends AbstractUser_1.AbstractUser {
     toPromptChoices(_question) {
         let choices = new Array();
         _question.answers.forEach((answer) => {
-            choices.push({ title: answer.name });
+            choices.push({ title: answer });
         });
         return choices;
     }
     updateStatistics(_answers, _statistic) {
-        for (let index = 0; index < _statistic.questions.length; index++) {
+        for (let index = 0; index < _statistic.answers.length; index++) {
             let chosenAnswerIndex = parseInt(_answers[index]);
-            let chosenAnswer = _statistic.questions[index].answers[chosenAnswerIndex];
-            chosenAnswer.count++;
+            _statistic.answers[index][chosenAnswerIndex] = _statistic.answers[index][chosenAnswerIndex]++;
         }
         _statistic.completedCounter++;
         this.completedSurveys.push(_statistic.uuid);
@@ -176,7 +175,7 @@ class User extends AbstractUser_1.AbstractUser {
             }
             else if (dateEnd.getTime() <= Date.now()) {
                 choices.push({
-                    title: flagRed + survey.title + (_popularOnly ? ` (locked, starting date: ${survey.timeSpan.start})` : ""),
+                    title: flagRed + survey.title + (_popularOnly ? ` (locked, terminating date: ${survey.timeSpan.end})` : ""),
                     value: "disabled",
                     disabled: true,
                     description: `locked, terminating date: ${survey.timeSpan.end}`
