@@ -44,7 +44,7 @@ class App {
         if (answer)
             await this.showMethods();
         else
-            process.exit(22);
+            process.exit();
     }
     async handleUserAnswer(_answer) {
         switch (_answer) {

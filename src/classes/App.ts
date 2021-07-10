@@ -42,7 +42,7 @@ export class App {
   public async goNext(): Promise<void> {
     let answer: boolean = await ConsoleHandler.toggle("Back to overview? \x1b[31m(no will exit the program)\x1b[0m", "yes", "no");
     if (answer) await this.showMethods();
-    else process.exit(22);
+    else process.exit();
   }
   private async handleUserAnswer(_answer: string): Promise<void> {
     switch (_answer) {
