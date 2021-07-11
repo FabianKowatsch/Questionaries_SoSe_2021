@@ -1,4 +1,4 @@
-import { ConsoleHandler } from "./ConsoleHandler";
+import { PromptHandler } from "./PromptHandler";
 export class Question {
   private static _minAnswerAmount: number = 2;
   private static _maxAnswerAmount: number = 10;
@@ -10,7 +10,7 @@ export class Question {
   }
 
   public async addAnswer(): Promise<void> {
-    let answer: string = await ConsoleHandler.text("Enter an answer: ");
+    let answer: string = await PromptHandler.text("Enter an answer: ");
     this.answers.push(answer);
     if (this.answers.length < Question._minAnswerAmount) {
       await this.addAnswer();
@@ -29,7 +29,7 @@ export class Question {
   }
 
   private async confirmNextAnswer(): Promise<boolean> {
-    let confirm: boolean = await ConsoleHandler.toggle("Do you want to add another Answer?", "yes", "no", false);
+    let confirm: boolean = await PromptHandler.toggle("Do you want to add another Answer?", "yes", "no", false);
     return confirm;
   }
 }

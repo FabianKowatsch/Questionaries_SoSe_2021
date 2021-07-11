@@ -4,10 +4,9 @@ import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 import { AbstractUser } from "./abstracts/AbstractUser";
 import { App } from "./App";
 import { Dao } from "./Dao";
-import { Question } from "./Question";
 import { RegisteredUser } from "./RegisteredUser";
 import sha256 from "crypto-js/sha256";
-import { ConsoleHandler } from "./ConsoleHandler";
+import { PromptHandler } from "./PromptHandler";
 
 export class User extends AbstractUser {
   private static _instance: User;
@@ -21,8 +20,8 @@ export class User extends AbstractUser {
   }
 
   public async showPopularSurveys(): Promise<void> {
-    let choices: Choice[] = this.createChoicesWithRestrictions(true);
-    let answer: string = await ConsoleHandler.select("Select the survey you want to participate in: ", choices);
+    let choices: Choice[] = PromptHandler.createDisabledChoicesUser(true, this);
+    let answer: string = await PromptHandler.select("Select the survey you want to participate in: ", choices);
     switch (answer) {
       case undefined || "return":
         return;
@@ -34,9 +33,9 @@ export class User extends AbstractUser {
   }
 
   public async searchSurvey(): Promise<void> {
-    let choices: Choice[] = this.createChoicesWithRestrictions(false);
+    let choices: Choice[] = PromptHandler.createDisabledChoicesUser(false, this);
 
-    let answer: string = await ConsoleHandler.autocomplete("Type the name of the survey you want to participate in: ", choices);
+    let answer: string = await PromptHandler.autocomplete("Type the name of the survey you want to participate in: ", choices);
     switch (answer) {
       case "disabled":
         console.log("the answer you chose is not available.");
@@ -67,8 +66,8 @@ export class User extends AbstractUser {
   }
   public async login(): Promise<void> {
     let userArray: RegisteredUser[] = Dao.getInstance().getAllUsers();
-    let username: string = await ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
-    let password: string = await ConsoleHandler.password("Enter your password (minimum of 4 characters): ");
+    let username: string = await PromptHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
+    let password: string = await PromptHandler.password("Enter your password (minimum of 4 characters): ");
     let pwd: CryptoJS.lib.WordArray = sha256(password);
     password = pwd.toString();
     if (this.isMatchingUser(username, userArray, password)) {
@@ -83,19 +82,19 @@ export class User extends AbstractUser {
   public async register(): Promise<void> {
     let userArray: RegisteredUser[] = Dao.getInstance().getAllUsers();
 
-    let username: string = await await ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
+    let username: string = await await PromptHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
 
     while (!this.isValidUsername(username) || this.isMatchingUser(username, userArray)) {
       if (!this.isValidUsername(username)) console.log("Your username must be alphanumerical and contain between 4 and 15 characters");
       else console.log("Your username already exists");
-      username = await await ConsoleHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
+      username = await await PromptHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
     }
 
-    let password: string = await ConsoleHandler.password("Enter your password (minimum of 4 characters): ");
+    let password: string = await PromptHandler.password("Enter your password (minimum of 4 characters): ");
 
     while (!this.isValidPassword(password)) {
       console.log("Your password must contain at least 4 characters");
-      password = await ConsoleHandler.password("Enter your password (minimum of 4 characters): ");
+      password = await PromptHandler.password("Enter your password (minimum of 4 characters): ");
     }
     let pwd: CryptoJS.lib.WordArray = sha256(password);
     password = pwd.toString();
@@ -124,19 +123,13 @@ export class User extends AbstractUser {
     console.log("You are now answering: " + _survey.title);
     let answersForStatistic: string[] = new Array<string>();
     for (let question of _survey.questions) {
-      let choices: Choice[] = this.toPromptChoices(question);
-      let answer: string = await ConsoleHandler.select(question.title, choices);
+      let choices: Choice[] = PromptHandler.toPromptChoices(question);
+      let answer: string = await PromptHandler.select(question.title, choices);
       answersForStatistic.push(answer);
     }
     return answersForStatistic;
   }
-  private toPromptChoices(_question: Question): Choice[] {
-    let choices: Choice[] = new Array<Choice>();
-    _question.answers.forEach((answer) => {
-      choices.push({ title: answer });
-    });
-    return choices;
-  }
+
   private updateStatistics(_answers: string[], _statistic: AbstractStatistic): void {
     for (let index: number = 0; index < _statistic.answers.length; index++) {
       let chosenAnswerIndex: number = parseInt(_answers[index]);
@@ -158,43 +151,8 @@ export class User extends AbstractUser {
     return false;
   }
 
-  private createChoicesWithRestrictions(_popularOnly: boolean): Choice[] {
-    let flagRed: string = "\x1b[31m";
-    let choices: Choice[] = new Array<Choice>();
-    let surveyArray: AbstractSurvey[];
-    if (_popularOnly) {
-      surveyArray = Dao.getInstance().getMostPopularSurveys();
-    } else {
-      surveyArray = Dao.getInstance().getAllSurveys();
-    }
-    surveyArray.forEach((survey) => {
-      let dateStart: Date = new Date(survey.timeSpan.start);
-      let dateEnd: Date = new Date(survey.timeSpan.end);
-      if (dateStart.getTime() > Date.now()) {
-        choices.push({
-          title: flagRed + survey.title + (_popularOnly ? ` (locked, starting date: ${survey.timeSpan.start})` : ""),
-          value: "disabled",
-          disabled: true,
-          description: `locked, starting date: ${survey.timeSpan.start}`
-        });
-      } else if (dateEnd.getTime() <= Date.now()) {
-        choices.push({
-          title: flagRed + survey.title + (_popularOnly ? ` (locked, terminating date: ${survey.timeSpan.end})` : ""),
-          value: "disabled",
-          disabled: true,
-          description: `locked, terminating date: ${survey.timeSpan.end}`
-        });
-      } else {
-        choices.push({ title: survey.title, value: survey.uuid });
-      }
-    });
-    if (_popularOnly) {
-      choices.push({ title: "\x1b[33mreturn to menu", value: "return" });
-    }
-    return choices;
-  }
   private async continueSearching(): Promise<void> {
-    let answer: boolean = await ConsoleHandler.toggle("do you want to continue searching?", "yes", "no", true);
+    let answer: boolean = await PromptHandler.toggle("do you want to continue searching?", "yes", "no", true);
     if (answer) {
       await this.searchSurvey();
     } else {

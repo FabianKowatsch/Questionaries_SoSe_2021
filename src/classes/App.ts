@@ -2,7 +2,7 @@ import { User } from "./User";
 import { RegisteredUser } from "./RegisteredUser";
 import { Choice } from "prompts";
 import { AbstractUser } from "./abstracts/AbstractUser";
-import { ConsoleHandler } from "./ConsoleHandler";
+import { PromptHandler } from "./PromptHandler";
 
 export class App {
   public static user: AbstractUser;
@@ -25,7 +25,7 @@ export class App {
         { title: "Login", value: "4" },
         { title: "Register", value: "5" }
       ];
-      answer = await ConsoleHandler.select("Which function do you want to use? ", choices);
+      answer = await PromptHandler.select("Which function do you want to use? ", choices);
       await this.handleUserAnswer(answer);
     } else if (App.user instanceof RegisteredUser) {
       choices = [
@@ -35,12 +35,12 @@ export class App {
         { title: "Watch personal Statistics", value: "4" },
         { title: "Watch Statistic for created Surveys", value: "5" }
       ];
-      answer = await ConsoleHandler.select("Which function do you want to use? ", choices);
+      answer = await PromptHandler.select("Which function do you want to use? ", choices);
       await this.handleRegisteredUserAnswer(answer);
     }
   }
   public async goNext(): Promise<void> {
-    let answer: boolean = await ConsoleHandler.toggle("Back to overview? \x1b[31m(no will exit the program)\x1b[0m", "yes", "no");
+    let answer: boolean = await PromptHandler.toggle("Back to overview? \x1b[31m(no will exit the program)\x1b[0m", "yes", "no");
     if (answer) await this.showMethods();
     else process.exit();
   }

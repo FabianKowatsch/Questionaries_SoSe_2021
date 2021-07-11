@@ -6,7 +6,7 @@ const AbstractSurvey_1 = require("./abstracts/AbstractSurvey");
 const Dao_1 = require("./Dao");
 const uuid_1 = require("uuid");
 const Statistic_1 = require("./Statistic");
-const ConsoleHandler_1 = require("./ConsoleHandler");
+const PromptHandler_1 = require("./PromptHandler");
 class Survey extends AbstractSurvey_1.AbstractSurvey {
     static _minQuestionAmount = 5;
     title;
@@ -20,7 +20,7 @@ class Survey extends AbstractSurvey_1.AbstractSurvey {
         this.uuid = uuid_1.v4();
     }
     async addQuestion() {
-        let title = await ConsoleHandler_1.ConsoleHandler.text("Enter a question you want to add: ");
+        let title = await PromptHandler_1.PromptHandler.text("Enter a question you want to add: ");
         let question = new Question_1.Question(title);
         await question.addAnswer();
         this.questions.push(question);
@@ -29,7 +29,7 @@ class Survey extends AbstractSurvey_1.AbstractSurvey {
             return;
         }
         else {
-            let answer = await ConsoleHandler_1.ConsoleHandler.toggle("Do you want to finish the Survey?", "yes", "no");
+            let answer = await PromptHandler_1.PromptHandler.toggle("Do you want to finish the Survey?", "yes", "no");
             if (answer) {
                 await this.upload();
                 return;
@@ -41,7 +41,7 @@ class Survey extends AbstractSurvey_1.AbstractSurvey {
         }
     }
     async setTimeSpan() {
-        this.timeSpan = await ConsoleHandler_1.ConsoleHandler.timeSpan();
+        this.timeSpan = await PromptHandler_1.PromptHandler.timeSpan();
     }
     upload() {
         Dao_1.Dao.getInstance().addSurvey(this);

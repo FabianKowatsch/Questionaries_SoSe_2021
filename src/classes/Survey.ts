@@ -4,7 +4,7 @@ import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 import { Dao } from "./Dao";
 import { v4 as uuidV4 } from "uuid";
 import { Statistic } from "./Statistic";
-import { ConsoleHandler } from "./ConsoleHandler";
+import { PromptHandler } from "./PromptHandler";
 export class Survey extends AbstractSurvey {
   private static _minQuestionAmount: number = 5;
   public title: string;
@@ -18,7 +18,7 @@ export class Survey extends AbstractSurvey {
     this.uuid = uuidV4();
   }
   public async addQuestion(): Promise<void> {
-    let title: string = await ConsoleHandler.text("Enter a question you want to add: ");
+    let title: string = await PromptHandler.text("Enter a question you want to add: ");
     let question: Question = new Question(title);
     await question.addAnswer();
     this.questions.push(question);
@@ -27,7 +27,7 @@ export class Survey extends AbstractSurvey {
       await this.addQuestion();
       return;
     } else {
-      let answer: boolean = await ConsoleHandler.toggle("Do you want to finish the Survey?", "yes", "no");
+      let answer: boolean = await PromptHandler.toggle("Do you want to finish the Survey?", "yes", "no");
       if (answer) {
         await this.upload();
         return;
@@ -39,7 +39,7 @@ export class Survey extends AbstractSurvey {
   }
 
   public async setTimeSpan(): Promise<void> {
-    this.timeSpan = await ConsoleHandler.timeSpan();
+    this.timeSpan = await PromptHandler.timeSpan();
   }
 
   public upload(): void {

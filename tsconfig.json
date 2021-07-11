@@ -56,8 +56,8 @@
     "skipLibCheck": true
   },
   "exclude": [
-    "W19/*",
-    "S20/*",
+    "tests/*",
+    "UML/*",
     "W20/*"
   ]
 }

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegisteredUser = void 0;
 const AbstractUser_1 = require("./abstracts/AbstractUser");
 const App_1 = require("./App");
-const ConsoleHandler_1 = require("./ConsoleHandler");
+const PromptHandler_1 = require("./PromptHandler");
 const Dao_1 = require("./Dao");
 const Survey_1 = require("./Survey");
 class RegisteredUser extends AbstractUser_1.AbstractUser {
@@ -26,7 +26,7 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         }
     }
     async createSurvey() {
-        let title = await ConsoleHandler_1.ConsoleHandler.text("Enter the title of your survey: ");
+        let title = await PromptHandler_1.PromptHandler.text("Enter the title of your survey: ");
         let survey = new Survey_1.Survey(title);
         await survey.setTimeSpan();
         await survey.addQuestion();
@@ -34,8 +34,8 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         Dao_1.Dao.getInstance().updateUser(this);
     }
     async showPopularSurveys() {
-        let choices = this.createChoicesWithRestrictions(true);
-        let answer = await ConsoleHandler_1.ConsoleHandler.select("Select the survey you want to participate in: ", choices);
+        let choices = PromptHandler_1.PromptHandler.createDisabledChoicesRegisteredUser(true, this);
+        let answer = await PromptHandler_1.PromptHandler.select("Select the survey you want to participate in: ", choices);
         switch (answer) {
             case undefined || "return":
                 return;
@@ -46,8 +46,8 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         }
     }
     async searchSurvey() {
-        let choices = this.createChoicesWithRestrictions(false);
-        let answer = await ConsoleHandler_1.ConsoleHandler.autocomplete("Type the name of the survey you want to participate in: ", choices);
+        let choices = PromptHandler_1.PromptHandler.createDisabledChoicesRegisteredUser(false, this);
+        let answer = await PromptHandler_1.PromptHandler.autocomplete("Type the name of the survey you want to participate in: ", choices);
         switch (answer) {
             case "disabled":
                 console.log("the answer you chose is not available.");
@@ -102,7 +102,7 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
             console.log(colorYellow + "your surveys havent been completed yet");
             return;
         }
-        let selectedSurveyIndex = parseInt(await ConsoleHandler_1.ConsoleHandler.select("choose one of your surveys: ", choices));
+        let selectedSurveyIndex = parseInt(await PromptHandler_1.PromptHandler.select("choose one of your surveys: ", choices));
         await this.watchSurveyStats(surveyArray[selectedSurveyIndex], statisticArray[selectedSurveyIndex]);
     }
     async watchSurveyStats(_survey, _statistic) {
@@ -113,7 +113,7 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
             let question = _survey.questions[questionIndex];
             console.log(`${colorYellow}${questionIndex + 1}. ${question.title}`);
             for (let answerIndex = 0; answerIndex < question.answers.length; answerIndex++) {
-                ConsoleHandler_1.ConsoleHandler.logAnswer(answerIndex, question.answers[answerIndex], _statistic.answers[questionIndex][answerIndex], _statistic.completedCounter);
+                PromptHandler_1.PromptHandler.logAnswer(answerIndex, question.answers[answerIndex], _statistic.answers[questionIndex][answerIndex], _statistic.completedCounter);
             }
         }
         return;
@@ -128,18 +128,11 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         console.log("You are now answering: " + _survey.title);
         let answersForStatistic = new Array();
         for (let question of _survey.questions) {
-            let choices = this.toPromptChoices(question);
-            let answer = await ConsoleHandler_1.ConsoleHandler.select(question.title, choices);
+            let choices = PromptHandler_1.PromptHandler.toPromptChoices(question);
+            let answer = await PromptHandler_1.PromptHandler.select(question.title, choices);
             answersForStatistic.push(answer);
         }
         return answersForStatistic;
-    }
-    toPromptChoices(_question) {
-        let choices = new Array();
-        _question.answers.forEach((answer) => {
-            choices.push({ title: answer });
-        });
-        return choices;
     }
     updateStatistics(_answers, _statistic) {
         for (let index = 0; index < _statistic.answers.length; index++) {
@@ -149,62 +142,10 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         _statistic.completedCounter++;
         this.completedSurveys.push(_statistic.uuid);
         Dao_1.Dao.getInstance().updateStatistic(_statistic);
-    }
-    createChoicesWithRestrictions(_popularOnly) {
-        let flagRed = "\x1b[31m";
-        let choices = new Array();
-        let surveyArray;
-        if (_popularOnly) {
-            surveyArray = Dao_1.Dao.getInstance().getMostPopularSurveys();
-        }
-        else {
-            surveyArray = Dao_1.Dao.getInstance().getAllSurveys();
-        }
-        surveyArray.forEach((survey) => {
-            let dateStart = new Date(survey.timeSpan.start);
-            let dateEnd = new Date(survey.timeSpan.end);
-            if (this.surveyIsByUser(survey.uuid)) {
-                choices.push({
-                    title: flagRed + survey.title + (_popularOnly ? ` (locked, survey was created by you)` : ""),
-                    value: "disabled",
-                    disabled: true,
-                    description: `locked, survey was created by you`
-                });
-            }
-            else if (dateStart.getTime() > Date.now()) {
-                choices.push({
-                    title: flagRed + survey.title + (_popularOnly ? ` (locked, starting date: ${survey.timeSpan.start})` : ""),
-                    value: "disabled",
-                    disabled: true,
-                    description: `locked, starting date: ${survey.timeSpan.start}`
-                });
-            }
-            else if (dateEnd.getTime() <= Date.now()) {
-                choices.push({
-                    title: flagRed + survey.title + (_popularOnly ? ` (locked, terminating date: ${survey.timeSpan.end})` : ""),
-                    value: "disabled",
-                    disabled: true,
-                    description: `locked, terminating date: ${survey.timeSpan.end}`
-                });
-            }
-            else {
-                choices.push({ title: survey.title, value: survey.uuid });
-            }
-        });
-        if (_popularOnly) {
-            choices.push({ title: "\x1b[33mreturn to menu", value: "return" });
-        }
-        return choices;
-    }
-    surveyIsByUser(_uuid) {
-        for (const id of this.createdSurveys) {
-            if (id === _uuid)
-                return true;
-        }
-        return false;
+        Dao_1.Dao.getInstance().updateUser(this);
     }
     async continueSearching() {
-        let answer = await ConsoleHandler_1.ConsoleHandler.toggle("do you want to continue searching?", "yes", "no", true);
+        let answer = await PromptHandler_1.PromptHandler.toggle("do you want to continue searching?", "yes", "no", true);
         if (answer) {
             await this.searchSurvey();
         }

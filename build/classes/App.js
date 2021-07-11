@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.App = void 0;
 const User_1 = require("./User");
 const RegisteredUser_1 = require("./RegisteredUser");
-const ConsoleHandler_1 = require("./ConsoleHandler");
+const PromptHandler_1 = require("./PromptHandler");
 class App {
     static user;
     static _instance;
@@ -24,7 +24,7 @@ class App {
                 { title: "Login", value: "4" },
                 { title: "Register", value: "5" }
             ];
-            answer = await ConsoleHandler_1.ConsoleHandler.select("Which function do you want to use? ", choices);
+            answer = await PromptHandler_1.PromptHandler.select("Which function do you want to use? ", choices);
             await this.handleUserAnswer(answer);
         }
         else if (App.user instanceof RegisteredUser_1.RegisteredUser) {
@@ -35,12 +35,12 @@ class App {
                 { title: "Watch personal Statistics", value: "4" },
                 { title: "Watch Statistic for created Surveys", value: "5" }
             ];
-            answer = await ConsoleHandler_1.ConsoleHandler.select("Which function do you want to use? ", choices);
+            answer = await PromptHandler_1.PromptHandler.select("Which function do you want to use? ", choices);
             await this.handleRegisteredUserAnswer(answer);
         }
     }
     async goNext() {
-        let answer = await ConsoleHandler_1.ConsoleHandler.toggle("Back to overview? \x1b[31m(no will exit the program)\x1b[0m", "yes", "no");
+        let answer = await PromptHandler_1.PromptHandler.toggle("Back to overview? \x1b[31m(no will exit the program)\x1b[0m", "yes", "no");
         if (answer)
             await this.showMethods();
         else

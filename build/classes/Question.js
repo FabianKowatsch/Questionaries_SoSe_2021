@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Question = void 0;
-const ConsoleHandler_1 = require("./ConsoleHandler");
+const PromptHandler_1 = require("./PromptHandler");
 class Question {
     static _minAnswerAmount = 2;
     static _maxAnswerAmount = 10;
@@ -12,7 +12,7 @@ class Question {
         this.answers = new Array();
     }
     async addAnswer() {
-        let answer = await ConsoleHandler_1.ConsoleHandler.text("Enter an answer: ");
+        let answer = await PromptHandler_1.PromptHandler.text("Enter an answer: ");
         this.answers.push(answer);
         if (this.answers.length < Question._minAnswerAmount) {
             await this.addAnswer();
@@ -33,7 +33,7 @@ class Question {
         }
     }
     async confirmNextAnswer() {
-        let confirm = await ConsoleHandler_1.ConsoleHandler.toggle("Do you want to add another Answer?", "yes", "no", false);
+        let confirm = await PromptHandler_1.PromptHandler.toggle("Do you want to add another Answer?", "yes", "no", false);
         return confirm;
     }
 }
