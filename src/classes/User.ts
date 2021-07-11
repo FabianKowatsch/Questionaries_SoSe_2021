@@ -104,6 +104,16 @@ export class User extends AbstractUser {
     Dao.getInstance().addUser(registeredUser);
     console.log("You have successfully registered! ");
   }
+
+  public isValidUsername(_username: string): boolean {
+    let alphanumeric: RegExp = /^[a-z0-9]{4,15}$/i;
+    return alphanumeric.test(_username);
+  }
+
+  private isValidPassword(_password: string): boolean {
+    let regex: RegExp = /^.{4,}$/;
+    return regex.test(_password);
+  }
   private async startSurvey(_uuid: string): Promise<void> {
     let survey: AbstractSurvey = Dao.getInstance().getSurvey(_uuid);
     let answers: string[] = await this.answerQuestions(survey);
@@ -135,16 +145,6 @@ export class User extends AbstractUser {
     _statistic.completedCounter++;
     this.completedSurveys.push(_statistic.uuid);
     Dao.getInstance().updateStatistic(_statistic);
-  }
-
-  private isValidUsername(_username: string): boolean {
-    let alphanumeric: RegExp = /^[a-z0-9]{4,15}$/i;
-    return alphanumeric.test(_username);
-  }
-
-  private isValidPassword(_password: string): boolean {
-    let regex: RegExp = /^.{4,}$/;
-    return regex.test(_password);
   }
 
   private isMatchingUser(_username: string, _userArray: RegisteredUser[], password?: string): boolean {
