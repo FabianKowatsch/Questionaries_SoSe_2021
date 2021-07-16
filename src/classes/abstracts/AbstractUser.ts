@@ -7,7 +7,7 @@ export abstract class AbstractUser {
 
   abstract searchSurvey(): void;
 
-  abstract watchGlobalStats(): void;
+  abstract watchPersonalStats(): void;
 
   watchCreatedSurveys(): void {
     return;

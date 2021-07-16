@@ -51,7 +51,7 @@ export class User extends AbstractUser {
     }
   }
 
-  public async watchGlobalStats(): Promise<void> {
+  public async watchPersonalStats(): Promise<void> {
     let completedSurveyCounter: number = this.completedSurveys.length;
     if (completedSurveyCounter === 0) {
       let colorYellow: string = "\x1b[33m";

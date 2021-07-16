@@ -49,7 +49,7 @@ class User extends AbstractUser_1.AbstractUser {
                 break;
         }
     }
-    async watchGlobalStats() {
+    async watchPersonalStats() {
         let completedSurveyCounter = this.completedSurveys.length;
         if (completedSurveyCounter === 0) {
             let colorYellow = "\x1b[33m";

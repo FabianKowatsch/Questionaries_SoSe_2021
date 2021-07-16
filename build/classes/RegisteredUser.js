@@ -62,14 +62,14 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
                 break;
         }
     }
-    async watchGlobalStats() {
+    async watchPersonalStats() {
         let completedSurveyCounter = this.completedSurveys.length;
         if (completedSurveyCounter === 0) {
             let colorYellow = "\x1b[33m";
             console.log(colorYellow + "You didnt complete any surveys yet.");
         }
         else {
-            console.log(`You completed ${completedSurveyCounter} surveys in this session:`);
+            console.log(`You completed ${completedSurveyCounter} surveys so far:`);
             this.completedSurveys.forEach((id) => {
                 let name = Dao_1.Dao.getInstance().getSurvey(id).title;
                 console.log(name);

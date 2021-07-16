@@ -20,22 +20,22 @@ export class App {
     if (App.user instanceof User) {
       choices = [
         { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
-        { title: "Search for Survey", value: "2" },
+        { title: "Search Survey by title", value: "2" },
         { title: "Watch personal Statistics", value: "3" },
         { title: "Login", value: "4" },
         { title: "Register", value: "5" }
       ];
-      answer = await PromptHandler.select("Which function do you want to use? ", choices);
+      answer = await PromptHandler.select("Welcome to Questionaries, which function do you want to use? ", choices);
       await this.handleUserAnswer(answer);
     } else if (App.user instanceof RegisteredUser) {
       choices = [
         { title: "Show most popular Surveys", description: "This option has a description", value: "1" },
-        { title: "Search for Survey", value: "2" },
+        { title: "Search Survey by title", value: "2" },
         { title: "Create a new Survey", value: "3" },
         { title: "Watch personal Statistics", value: "4" },
         { title: "Watch Statistic for created Surveys", value: "5" }
       ];
-      answer = await PromptHandler.select("Which function do you want to use? ", choices);
+      answer = await PromptHandler.select("Welcome to Questionaries, which function do you want to use? ", choices);
       await this.handleRegisteredUserAnswer(answer);
     }
   }
@@ -53,7 +53,7 @@ export class App {
         await App.user.searchSurvey();
         break;
       case "3":
-        App.user.watchGlobalStats();
+        App.user.watchPersonalStats();
         break;
       case "4":
         await App.user.login();
@@ -78,7 +78,7 @@ export class App {
         await App.user.createSurvey();
         break;
       case "4":
-        await App.user.watchGlobalStats();
+        await App.user.watchPersonalStats();
         break;
       case "5":
         await App.user.watchCreatedSurveys();

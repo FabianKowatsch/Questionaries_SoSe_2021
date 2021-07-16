@@ -68,13 +68,13 @@ export class RegisteredUser extends AbstractUser {
     }
   }
 
-  public async watchGlobalStats(): Promise<void> {
+  public async watchPersonalStats(): Promise<void> {
     let completedSurveyCounter: number = this.completedSurveys.length;
     if (completedSurveyCounter === 0) {
       let colorYellow: string = "\x1b[33m";
       console.log(colorYellow + "You didnt complete any surveys yet.");
     } else {
-      console.log(`You completed ${completedSurveyCounter} surveys in this session:`);
+      console.log(`You completed ${completedSurveyCounter} surveys so far:`);
       this.completedSurveys.forEach((id) => {
         let name: string = Dao.getInstance().getSurvey(id).title;
         console.log(name);

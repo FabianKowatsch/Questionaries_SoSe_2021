@@ -8,7 +8,7 @@ export class NullSurvey extends AbstractSurvey {
   public questions: Question[];
   constructor() {
     super();
-    this.title = "null";
+    this.title = "no Survey was found";
     this.questions = new Array<Question>();
     this.uuid = "null";
     this.timeSpan = { start: new Date(), end: new Date() };
