@@ -6,7 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const AbstractUser_1 = require("./abstracts/AbstractUser");
 const App_1 = require("./App");
-const Dao_1 = require("./Dao");
+const UserDao_1 = require("./UserDao");
+const SurveyDao_1 = require("./SurveyDao");
+const StatisticDao_1 = require("./StatisticDao");
 const RegisteredUser_1 = require("./RegisteredUser");
 const sha256_1 = __importDefault(require("crypto-js/sha256"));
 const PromptHandler_1 = require("./PromptHandler");
@@ -58,13 +60,13 @@ class User extends AbstractUser_1.AbstractUser {
         else {
             console.log(`You completed ${completedSurveyCounter} surveys in this session:`);
             this.completedSurveys.forEach((id) => {
-                let name = Dao_1.Dao.getInstance().getSurvey(id).title;
+                let name = SurveyDao_1.SurveyDao.getInstance().get(id).title;
                 console.log(name);
             });
         }
     }
     async login() {
-        let userArray = Dao_1.Dao.getInstance().getAllUsers();
+        let userArray = UserDao_1.UserDao.getInstance().getAll();
         let username = await PromptHandler_1.PromptHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
         let password = await PromptHandler_1.PromptHandler.password("Enter your password (minimum of 4 characters): ");
         let pwd = sha256_1.default(password);
@@ -80,7 +82,7 @@ class User extends AbstractUser_1.AbstractUser {
         }
     }
     async register() {
-        let userArray = Dao_1.Dao.getInstance().getAllUsers();
+        let userArray = UserDao_1.UserDao.getInstance().getAll();
         let username = await await PromptHandler_1.PromptHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
         while (!this.isValidUsername(username) || this.isMatchingUser(username, userArray)) {
             if (!this.isValidUsername(username))
@@ -98,7 +100,7 @@ class User extends AbstractUser_1.AbstractUser {
         password = pwd.toString();
         let registeredUser = new RegisteredUser_1.RegisteredUser(username, password, true);
         App_1.App.user = registeredUser;
-        Dao_1.Dao.getInstance().addUser(registeredUser);
+        UserDao_1.UserDao.getInstance().add(registeredUser);
         console.log("You have successfully registered! ");
     }
     isValidUsername(_username) {
@@ -110,9 +112,9 @@ class User extends AbstractUser_1.AbstractUser {
         return regex.test(_password);
     }
     async startSurvey(_uuid) {
-        let survey = Dao_1.Dao.getInstance().getSurvey(_uuid);
+        let survey = SurveyDao_1.SurveyDao.getInstance().get(_uuid);
         let answers = await this.answerQuestions(survey);
-        let statistic = Dao_1.Dao.getInstance().getStatistic(_uuid);
+        let statistic = StatisticDao_1.StatisticDao.getInstance().get(_uuid);
         this.updateStatistics(answers, statistic);
     }
     async answerQuestions(_survey) {
@@ -132,7 +134,7 @@ class User extends AbstractUser_1.AbstractUser {
         }
         _statistic.completedCounter++;
         this.completedSurveys.push(_statistic.uuid);
-        Dao_1.Dao.getInstance().updateStatistic(_statistic);
+        StatisticDao_1.StatisticDao.getInstance().update(_statistic);
     }
     isMatchingUser(_username, _userArray, password) {
         for (let user of _userArray) {

@@ -4,8 +4,11 @@ exports.RegisteredUser = void 0;
 const AbstractUser_1 = require("./abstracts/AbstractUser");
 const App_1 = require("./App");
 const PromptHandler_1 = require("./PromptHandler");
-const Dao_1 = require("./Dao");
+const UserDao_1 = require("./UserDao");
+const StatisticDao_1 = require("./StatisticDao");
+const SurveyDao_1 = require("./SurveyDao");
 const Survey_1 = require("./Survey");
+//import { User } from "./User";
 class RegisteredUser extends AbstractUser_1.AbstractUser {
     username;
     password;
@@ -20,7 +23,7 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
             this.createdSurveys = new Array();
         }
         else {
-            let existingUser = Dao_1.Dao.getInstance().getUser(this.username);
+            let existingUser = UserDao_1.UserDao.getInstance().get(this.username);
             this.completedSurveys = existingUser.completedSurveys;
             this.createdSurveys = existingUser.createdSurveys;
         }
@@ -31,7 +34,7 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         await survey.setTimeSpan();
         await survey.addQuestion();
         this.createdSurveys.push(survey.uuid);
-        Dao_1.Dao.getInstance().updateUser(this);
+        UserDao_1.UserDao.getInstance().update(this);
     }
     async showPopularSurveys() {
         let choices = PromptHandler_1.PromptHandler.createDisabledChoicesRegisteredUser(true, this);
@@ -71,7 +74,7 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         else {
             console.log(`You completed ${completedSurveyCounter} surveys so far:`);
             this.completedSurveys.forEach((id) => {
-                let name = Dao_1.Dao.getInstance().getSurvey(id).title;
+                let name = SurveyDao_1.SurveyDao.getInstance().get(id).title;
                 console.log(name);
             });
         }
@@ -86,8 +89,8 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
             return;
         }
         this.createdSurveys.forEach((uuid) => {
-            surveyArray.push(Dao_1.Dao.getInstance().getSurvey(uuid));
-            statisticArray.push(Dao_1.Dao.getInstance().getStatistic(uuid));
+            surveyArray.push(SurveyDao_1.SurveyDao.getInstance().get(uuid));
+            statisticArray.push(StatisticDao_1.StatisticDao.getInstance().get(uuid));
         });
         for (let index = 0; index < surveyArray.length; index++) {
             let completedCounter = statisticArray[index].completedCounter;
@@ -118,10 +121,18 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         }
         return;
     }
+    // public async signOut(): Promise<void> {
+    //   let answer: boolean = await PromptHandler.toggle("Do you really want to sign out?", "yes", "no");
+    //   if (answer) {
+    //     App.user = User.getInstance();
+    //   } else {
+    //     return;
+    //   }
+    // }
     async startSurvey(_uuid) {
-        let survey = Dao_1.Dao.getInstance().getSurvey(_uuid);
+        let survey = SurveyDao_1.SurveyDao.getInstance().get(_uuid);
         let answers = await this.answerQuestions(survey);
-        let statistic = Dao_1.Dao.getInstance().getStatistic(_uuid);
+        let statistic = StatisticDao_1.StatisticDao.getInstance().get(_uuid);
         this.updateStatistics(answers, statistic);
     }
     async answerQuestions(_survey) {
@@ -141,8 +152,8 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         }
         _statistic.completedCounter++;
         this.completedSurveys.push(_statistic.uuid);
-        Dao_1.Dao.getInstance().updateStatistic(_statistic);
-        Dao_1.Dao.getInstance().updateUser(this);
+        StatisticDao_1.StatisticDao.getInstance().update(_statistic);
+        UserDao_1.UserDao.getInstance().update(this);
     }
     async continueSearching() {
         let answer = await PromptHandler_1.PromptHandler.toggle("do you want to continue searching?", "yes", "no", true);

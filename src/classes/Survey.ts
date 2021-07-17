@@ -1,7 +1,8 @@
 import { Question } from "./Question";
 import { TimeSpan } from "../types/TimeSpan.type";
 import { AbstractSurvey } from "./abstracts/AbstractSurvey";
-import { Dao } from "./Dao";
+import { SurveyDao } from "./SurveyDao";
+import { StatisticDao } from "./StatisticDao";
 import { v4 as uuidV4 } from "uuid";
 import { Statistic } from "./Statistic";
 import { PromptHandler } from "./PromptHandler";
@@ -43,7 +44,7 @@ export class Survey extends AbstractSurvey {
   }
 
   public upload(): void {
-    Dao.getInstance().addSurvey(this);
+    SurveyDao.getInstance().add(this);
     let answers: number[][] = new Array<number[]>();
     this.questions.forEach((question) => {
       let initial: number[] = new Array<number>(question.answers.length);
@@ -52,6 +53,6 @@ export class Survey extends AbstractSurvey {
       }
       answers.push(initial);
     });
-    Dao.getInstance().addStatistic(new Statistic(this.uuid, answers));
+    StatisticDao.getInstance().add(new Statistic(this.uuid, answers));
   }
 }

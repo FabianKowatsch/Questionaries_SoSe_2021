@@ -3,7 +3,9 @@ import { AbstractStatistic } from "./abstracts/AbstractStatistic";
 import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 import { AbstractUser } from "./abstracts/AbstractUser";
 import { App } from "./App";
-import { Dao } from "./Dao";
+import { UserDao } from "./UserDao";
+import { SurveyDao } from "./SurveyDao";
+import { StatisticDao } from "./StatisticDao";
 import { RegisteredUser } from "./RegisteredUser";
 import sha256 from "crypto-js/sha256";
 import { PromptHandler } from "./PromptHandler";
@@ -59,13 +61,13 @@ export class User extends AbstractUser {
     } else {
       console.log(`You completed ${completedSurveyCounter} surveys in this session:`);
       this.completedSurveys.forEach((id) => {
-        let name: string = Dao.getInstance().getSurvey(id).title;
+        let name: string = SurveyDao.getInstance().get(id).title;
         console.log(name);
       });
     }
   }
   public async login(): Promise<void> {
-    let userArray: RegisteredUser[] = Dao.getInstance().getAllUsers();
+    let userArray: RegisteredUser[] = UserDao.getInstance().getAll();
     let username: string = await PromptHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
     let password: string = await PromptHandler.password("Enter your password (minimum of 4 characters): ");
     let pwd: CryptoJS.lib.WordArray = sha256(password);
@@ -80,7 +82,7 @@ export class User extends AbstractUser {
     }
   }
   public async register(): Promise<void> {
-    let userArray: RegisteredUser[] = Dao.getInstance().getAllUsers();
+    let userArray: RegisteredUser[] = UserDao.getInstance().getAll();
 
     let username: string = await await PromptHandler.text("Enter your username (alphanumerical, 4-15 characters): ");
 
@@ -100,7 +102,7 @@ export class User extends AbstractUser {
     password = pwd.toString();
     let registeredUser: RegisteredUser = new RegisteredUser(username, password, true);
     App.user = registeredUser;
-    Dao.getInstance().addUser(registeredUser);
+    UserDao.getInstance().add(registeredUser);
     console.log("You have successfully registered! ");
   }
 
@@ -114,9 +116,9 @@ export class User extends AbstractUser {
     return regex.test(_password);
   }
   private async startSurvey(_uuid: string): Promise<void> {
-    let survey: AbstractSurvey = Dao.getInstance().getSurvey(_uuid);
+    let survey: AbstractSurvey = SurveyDao.getInstance().get(_uuid);
     let answers: string[] = await this.answerQuestions(survey);
-    let statistic: AbstractStatistic = Dao.getInstance().getStatistic(_uuid);
+    let statistic: AbstractStatistic = StatisticDao.getInstance().get(_uuid);
     this.updateStatistics(answers, statistic);
   }
   private async answerQuestions(_survey: AbstractSurvey): Promise<string[]> {
@@ -137,7 +139,7 @@ export class User extends AbstractUser {
     }
     _statistic.completedCounter++;
     this.completedSurveys.push(_statistic.uuid);
-    Dao.getInstance().updateStatistic(_statistic);
+    StatisticDao.getInstance().update(_statistic);
   }
 
   private isMatchingUser(_username: string, _userArray: RegisteredUser[], password?: string): boolean {

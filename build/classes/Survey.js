@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Survey = void 0;
 const Question_1 = require("./Question");
 const AbstractSurvey_1 = require("./abstracts/AbstractSurvey");
-const Dao_1 = require("./Dao");
+const SurveyDao_1 = require("./SurveyDao");
+const StatisticDao_1 = require("./StatisticDao");
 const uuid_1 = require("uuid");
 const Statistic_1 = require("./Statistic");
 const PromptHandler_1 = require("./PromptHandler");
@@ -44,7 +45,7 @@ class Survey extends AbstractSurvey_1.AbstractSurvey {
         this.timeSpan = await PromptHandler_1.PromptHandler.timeSpan();
     }
     upload() {
-        Dao_1.Dao.getInstance().addSurvey(this);
+        SurveyDao_1.SurveyDao.getInstance().add(this);
         let answers = new Array();
         this.questions.forEach((question) => {
             let initial = new Array(question.answers.length);
@@ -53,7 +54,7 @@ class Survey extends AbstractSurvey_1.AbstractSurvey {
             }
             answers.push(initial);
         });
-        Dao_1.Dao.getInstance().addStatistic(new Statistic_1.Statistic(this.uuid, answers));
+        StatisticDao_1.StatisticDao.getInstance().add(new Statistic_1.Statistic(this.uuid, answers));
     }
 }
 exports.Survey = Survey;

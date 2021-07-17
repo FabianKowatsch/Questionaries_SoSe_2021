@@ -1,7 +1,7 @@
 import prompts, { Answers, Choice } from "prompts";
 import { TimeSpan } from "../types/TimeSpan.type";
 import { AbstractSurvey } from "./abstracts/AbstractSurvey";
-import { Dao } from "./Dao";
+import { SurveyDao } from "./SurveyDao";
 import { Question } from "./Question";
 import { RegisteredUser } from "./RegisteredUser";
 import { User } from "./User";
@@ -107,9 +107,9 @@ export class PromptHandler {
     let choices: Choice[] = new Array<Choice>();
     let surveyArray: AbstractSurvey[];
     if (_popularOnly) {
-      surveyArray = Dao.getInstance().getMostPopularSurveys();
+      surveyArray = SurveyDao.getInstance().getMostPopularSurveys();
     } else {
-      surveyArray = Dao.getInstance().getAllSurveys();
+      surveyArray = SurveyDao.getInstance().getAll();
     }
     surveyArray.forEach((survey) => {
       if (PromptHandler.userCompletedOrCreatedSurvey(survey.uuid, _user.createdSurveys)) {
@@ -141,9 +141,9 @@ export class PromptHandler {
     let choices: Choice[] = new Array<Choice>();
     let surveyArray: AbstractSurvey[];
     if (_popularOnly) {
-      surveyArray = Dao.getInstance().getMostPopularSurveys();
+      surveyArray = SurveyDao.getInstance().getMostPopularSurveys();
     } else {
-      surveyArray = Dao.getInstance().getAllSurveys();
+      surveyArray = SurveyDao.getInstance().getAll();
     }
     surveyArray.forEach((survey) => {
       if (PromptHandler.userCompletedOrCreatedSurvey(survey.uuid, _user.completedSurveys)) {

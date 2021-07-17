@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PromptHandler = void 0;
 const prompts_1 = __importDefault(require("prompts"));
-const Dao_1 = require("./Dao");
+const SurveyDao_1 = require("./SurveyDao");
 class PromptHandler {
     static async select(_message, _choices, _initial = 1) {
         let answer = await prompts_1.default({
@@ -103,10 +103,10 @@ class PromptHandler {
         let choices = new Array();
         let surveyArray;
         if (_popularOnly) {
-            surveyArray = Dao_1.Dao.getInstance().getMostPopularSurveys();
+            surveyArray = SurveyDao_1.SurveyDao.getInstance().getMostPopularSurveys();
         }
         else {
-            surveyArray = Dao_1.Dao.getInstance().getAllSurveys();
+            surveyArray = SurveyDao_1.SurveyDao.getInstance().getAll();
         }
         surveyArray.forEach((survey) => {
             if (PromptHandler.userCompletedOrCreatedSurvey(survey.uuid, _user.createdSurveys)) {
@@ -139,10 +139,10 @@ class PromptHandler {
         let choices = new Array();
         let surveyArray;
         if (_popularOnly) {
-            surveyArray = Dao_1.Dao.getInstance().getMostPopularSurveys();
+            surveyArray = SurveyDao_1.SurveyDao.getInstance().getMostPopularSurveys();
         }
         else {
-            surveyArray = Dao_1.Dao.getInstance().getAllSurveys();
+            surveyArray = SurveyDao_1.SurveyDao.getInstance().getAll();
         }
         surveyArray.forEach((survey) => {
             if (PromptHandler.userCompletedOrCreatedSurvey(survey.uuid, _user.completedSurveys)) {
