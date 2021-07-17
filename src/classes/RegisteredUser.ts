@@ -9,7 +9,7 @@ import { StatisticDao } from "./StatisticDao";
 import { SurveyDao } from "./SurveyDao";
 import { Question } from "./Question";
 import { Survey } from "./Survey";
-//import { User } from "./User";
+import { User } from "./User";
 
 export class RegisteredUser extends AbstractUser {
   public username: string;
@@ -111,6 +111,7 @@ export class RegisteredUser extends AbstractUser {
       return;
     }
     let selectedSurveyIndex: number = parseInt(await PromptHandler.select("choose one of your surveys: ", choices));
+    console.log(selectedSurveyIndex);
     await this.watchSurveyStats(surveyArray[selectedSurveyIndex], statisticArray[selectedSurveyIndex]);
   }
 
@@ -128,19 +129,22 @@ export class RegisteredUser extends AbstractUser {
     return;
   }
 
-  // public async signOut(): Promise<void> {
-  //   let answer: boolean = await PromptHandler.toggle("Do you really want to sign out?", "yes", "no");
-  //   if (answer) {
-  //     App.user = User.getInstance();
-  //   } else {
-  //     return;
-  //   }
-  // }
+  public async signOut(): Promise<void> {
+    let answer: boolean = await PromptHandler.toggle("Do you really want to sign out?", "yes", "no");
+    if (answer) {
+      App.user = User.getInstance();
+      App.user.completedSurveys = [];
+    } else {
+      return;
+    }
+  }
 
   private async startSurvey(_uuid: string): Promise<void> {
     let survey: AbstractSurvey = SurveyDao.getInstance().get(_uuid);
     let answers: string[] = await this.answerQuestions(survey);
     let statistic: AbstractStatistic = StatisticDao.getInstance().get(_uuid);
+    let colorCyan: string = "\x1b[96m";
+    console.log(`Thank you for participating in the survey: ${colorCyan + survey.title}`);
     this.updateStatistics(answers, statistic);
   }
   private async answerQuestions(_survey: AbstractSurvey): Promise<string[]> {

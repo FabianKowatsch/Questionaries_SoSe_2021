@@ -6,7 +6,7 @@ import { Question } from "./Question";
 import { RegisteredUser } from "./RegisteredUser";
 import { User } from "./User";
 export class PromptHandler {
-  public static async select(_message: string, _choices: Choice[], _initial: number = 1): Promise<string> {
+  public static async select(_message: string, _choices: Choice[], _initial: number = 0): Promise<string> {
     let answer: Answers<string> = await prompts({
       type: "select",
       name: "value",

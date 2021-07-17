@@ -17,6 +17,9 @@ class AbstractUser {
     register() {
         return;
     }
+    signOut() {
+        return;
+    }
 }
 exports.AbstractUser = AbstractUser;
 //# sourceMappingURL=AbstractUser.js.map

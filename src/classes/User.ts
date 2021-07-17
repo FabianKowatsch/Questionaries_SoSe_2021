@@ -119,6 +119,8 @@ export class User extends AbstractUser {
     let survey: AbstractSurvey = SurveyDao.getInstance().get(_uuid);
     let answers: string[] = await this.answerQuestions(survey);
     let statistic: AbstractStatistic = StatisticDao.getInstance().get(_uuid);
+    let colorCyan: string = "\x1b[96m";
+    console.log(`Thank you for participating in the survey: ${colorCyan + survey.title}`);
     this.updateStatistics(answers, statistic);
   }
   private async answerQuestions(_survey: AbstractSurvey): Promise<string[]> {

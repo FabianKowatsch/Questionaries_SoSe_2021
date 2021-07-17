@@ -33,7 +33,8 @@ export class App {
         { title: "Search Survey by title", value: "2" },
         { title: "Create a new Survey", value: "3" },
         { title: "Watch personal Statistics", value: "4" },
-        { title: "Watch Statistic for created Surveys", value: "5" }
+        { title: "Watch Statistic for created Surveys", value: "5" },
+        { title: "Sign out", value: "6" }
       ];
       answer = await PromptHandler.select("Welcome to Questionaries, which function do you want to use? ", choices);
       await this.handleRegisteredUserAnswer(answer);
@@ -82,6 +83,9 @@ export class App {
         break;
       case "5":
         await App.user.watchCreatedSurveys();
+        break;
+      case "6":
+        await App.user.signOut();
         break;
       default:
         break;

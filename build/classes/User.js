@@ -115,6 +115,8 @@ class User extends AbstractUser_1.AbstractUser {
         let survey = SurveyDao_1.SurveyDao.getInstance().get(_uuid);
         let answers = await this.answerQuestions(survey);
         let statistic = StatisticDao_1.StatisticDao.getInstance().get(_uuid);
+        let colorCyan = "\x1b[96m";
+        console.log(`Thank you for participating in the survey: ${colorCyan + survey.title}`);
         this.updateStatistics(answers, statistic);
     }
     async answerQuestions(_survey) {

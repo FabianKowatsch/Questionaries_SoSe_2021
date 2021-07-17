@@ -7,7 +7,7 @@ exports.PromptHandler = void 0;
 const prompts_1 = __importDefault(require("prompts"));
 const SurveyDao_1 = require("./SurveyDao");
 class PromptHandler {
-    static async select(_message, _choices, _initial = 1) {
+    static async select(_message, _choices, _initial = 0) {
         let answer = await prompts_1.default({
             type: "select",
             name: "value",

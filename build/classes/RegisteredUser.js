@@ -8,7 +8,7 @@ const UserDao_1 = require("./UserDao");
 const StatisticDao_1 = require("./StatisticDao");
 const SurveyDao_1 = require("./SurveyDao");
 const Survey_1 = require("./Survey");
-//import { User } from "./User";
+const User_1 = require("./User");
 class RegisteredUser extends AbstractUser_1.AbstractUser {
     username;
     password;
@@ -106,6 +106,7 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
             return;
         }
         let selectedSurveyIndex = parseInt(await PromptHandler_1.PromptHandler.select("choose one of your surveys: ", choices));
+        console.log(selectedSurveyIndex);
         await this.watchSurveyStats(surveyArray[selectedSurveyIndex], statisticArray[selectedSurveyIndex]);
     }
     async watchSurveyStats(_survey, _statistic) {
@@ -121,18 +122,22 @@ class RegisteredUser extends AbstractUser_1.AbstractUser {
         }
         return;
     }
-    // public async signOut(): Promise<void> {
-    //   let answer: boolean = await PromptHandler.toggle("Do you really want to sign out?", "yes", "no");
-    //   if (answer) {
-    //     App.user = User.getInstance();
-    //   } else {
-    //     return;
-    //   }
-    // }
+    async signOut() {
+        let answer = await PromptHandler_1.PromptHandler.toggle("Do you really want to sign out?", "yes", "no");
+        if (answer) {
+            App_1.App.user = User_1.User.getInstance();
+            App_1.App.user.completedSurveys = [];
+        }
+        else {
+            return;
+        }
+    }
     async startSurvey(_uuid) {
         let survey = SurveyDao_1.SurveyDao.getInstance().get(_uuid);
         let answers = await this.answerQuestions(survey);
         let statistic = StatisticDao_1.StatisticDao.getInstance().get(_uuid);
+        let colorCyan = "\x1b[96m";
+        console.log(`Thank you for participating in the survey: ${colorCyan + survey.title}`);
         this.updateStatistics(answers, statistic);
     }
     async answerQuestions(_survey) {

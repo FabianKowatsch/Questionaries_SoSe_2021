@@ -26,4 +26,7 @@ export abstract class AbstractUser {
   register(): void {
     return;
   }
+  signOut(): void {
+    return;
+  }
 }
