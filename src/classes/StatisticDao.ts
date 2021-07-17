@@ -2,7 +2,6 @@ import { Dao } from "../interfaces/Dao";
 import { AbstractStatistic } from "./abstracts/AbstractStatistic";
 import { FileHandler } from "./FileHandler";
 import { NullStatistic } from "./NullStatistic";
-import { Statistic } from "./Statistic";
 
 export class StatisticDao implements Dao<AbstractStatistic> {
   private static _instance: StatisticDao;
@@ -34,8 +33,8 @@ export class StatisticDao implements Dao<AbstractStatistic> {
     FileHandler.getInstance().writeFile("../data/statistics.json", statisticArray);
   }
 
-  public add(_statistic: Statistic): void {
-    let statisticArray: Statistic[] = this.getAll();
+  public add(_statistic: AbstractStatistic): void {
+    let statisticArray: AbstractStatistic[] = this.getAll();
     statisticArray.push(_statistic);
     FileHandler.getInstance().writeFile("../data/statistics.json", statisticArray);
   }

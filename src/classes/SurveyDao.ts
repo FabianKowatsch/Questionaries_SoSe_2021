@@ -4,7 +4,6 @@ import { AbstractSurvey } from "./abstracts/AbstractSurvey";
 import { FileHandler } from "./FileHandler";
 import { NullSurvey } from "./NullSurvey";
 import { StatisticDao } from "./StatisticDao";
-import { Survey } from "./Survey";
 
 export class SurveyDao implements Dao<AbstractSurvey> {
   private static _instance: SurveyDao;
@@ -48,7 +47,7 @@ export class SurveyDao implements Dao<AbstractSurvey> {
     FileHandler.getInstance().writeFile("../data/surveys.json", surveyArray);
   }
 
-  public add(_survey: Survey): void {
+  public add(_survey: AbstractSurvey): void {
     let surveyArray: AbstractSurvey[] = this.getAll();
     surveyArray.push(_survey);
     FileHandler.getInstance().writeFile("../data/surveys.json", surveyArray);
