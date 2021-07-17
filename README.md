@@ -37,7 +37,7 @@ npm install
 
 #### Class Diagram
 
-![Class Diagram](https://github.com/FabianKowatsch/Questionaries_SoSe_2021/blob/main/UML/png/class_diagram.png?raw=true "Class Diagram")
+![Class Diagram](https://github.com/FabianKowatsch/Questionaries_SoSe_2021/blob/main/UML/svg/class_diagram.svg?raw=true "Class Diagram")
 
 #### Use-Case Diagram
 
