@@ -26,8 +26,23 @@ npm install
    ```
 
    - to run a unit-test, run:
-     ```
-     npm run test
-     ```
+
+   ```
+    npm run test
+   ```
 
 2. use the arrow keys to navigate, use your keyboard when input is requested
+
+### UML
+
+#### Class Diagram
+
+![Class Diagram](https://github.com/FabianKowatsch/Questionaries_SoSe_2021/blob/main/UML/png/class_diagram.png?raw=true "Class Diagram")
+
+#### Use-Case Diagram
+
+![Use-Case Diagram](https://github.com/FabianKowatsch/Questionaries_SoSe_2021/blob/main/UML/png/use_case_diagram.png?raw=true "Use-Case Diagram")
+
+#### Activity Diagram
+
+![Activity Diagram](https://github.com/FabianKowatsch/Questionaries_SoSe_2021/blob/main/UML/png/activity_diagram.png?raw=true "Activity Diagram")
