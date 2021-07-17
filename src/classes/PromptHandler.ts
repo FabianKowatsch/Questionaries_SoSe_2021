@@ -19,12 +19,14 @@ export class PromptHandler {
   }
 
   public static async autocomplete(_message: string, _choices: Choice[]): Promise<string> {
+    let colorRed: string = "\x1b[31m";
     let answer: Answers<string> = await prompts({
       type: "autocomplete",
       name: "value",
       message: _message,
       choices: _choices,
-      suggest: (input: string, choices: Choice[]) => Promise.resolve(choices.filter((survey) => survey.title.slice(0, input.length) === input))
+      suggest: (input: string, choices: Choice[]) =>
+        Promise.resolve(choices.filter((survey) => survey.title.slice(0, input.length) === input || survey.title.slice(0, input.length + colorRed.length) === colorRed + input))
     });
     return answer.value;
   }
@@ -170,17 +172,17 @@ export class PromptHandler {
     let choice: Choice;
     if (dateStart.getTime() > Date.now()) {
       choice = {
-        title: colorRed + _survey.title + (_popularOnly ? ` (locked, starting date: ${_survey.timeSpan.start})` : ""),
+        title: colorRed + _survey.title + (_popularOnly ? ` (locked, starting date: ${dateStart.toLocaleString("de-DE")})` : ""),
         value: "disabled",
         disabled: true,
-        description: `locked, starting date: ${_survey.timeSpan.start}`
+        description: `locked, starting date: ${dateStart.toLocaleString("de-DE")}`
       };
     } else if (dateEnd.getTime() <= Date.now()) {
       choice = {
-        title: colorRed + _survey.title + (_popularOnly ? ` (locked, terminating date: ${_survey.timeSpan.end})` : ""),
+        title: colorRed + _survey.title + (_popularOnly ? ` (locked, terminating date: ${dateEnd.toLocaleString("de-DE")})` : ""),
         value: "disabled",
         disabled: true,
-        description: `locked, terminating date: ${_survey.timeSpan.end}`
+        description: `locked, terminating date: ${dateEnd.toLocaleString("de-DE")}`
       };
     } else {
       choice = { title: _survey.title, value: _survey.uuid };
