@@ -8,7 +8,7 @@ class NullStatistic extends AbstractStatistic_1.AbstractStatistic {
     completedCounter;
     constructor() {
         super();
-        this.uuid = "0";
+        this.uuid = "null";
         this.answers = new Array();
         this.completedCounter = 0;
     }

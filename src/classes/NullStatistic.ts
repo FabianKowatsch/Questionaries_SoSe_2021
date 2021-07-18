@@ -5,7 +5,7 @@ export class NullStatistic extends AbstractStatistic {
   public completedCounter: number;
   constructor() {
     super();
-    this.uuid = "0";
+    this.uuid = "null";
     this.answers = new Array<number[]>();
     this.completedCounter = 0;
   }
