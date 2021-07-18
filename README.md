@@ -4,6 +4,7 @@
 
 - tested on node version 14.17.3
 - tested on npm version 7.19.1
+- see package.json for the full list of required node modules
 
 older versions may work too
 
@@ -34,6 +35,8 @@ npm install
 2. use the arrow keys to navigate, use your keyboard when input is requested
 
 ### UML
+
+Better versions of these diagrams can be found in UML/svg.
 
 #### Class Diagram
 
