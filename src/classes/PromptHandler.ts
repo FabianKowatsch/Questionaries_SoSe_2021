@@ -26,7 +26,11 @@ export class PromptHandler {
       message: _message,
       choices: _choices,
       suggest: (input: string, choices: Choice[]) =>
-        Promise.resolve(choices.filter((survey) => survey.title.slice(0, input.length) === input || survey.title.slice(0, input.length + colorRed.length) === colorRed + input))
+        Promise.resolve(
+          choices.filter(
+            (survey) => (input.length > 0 && survey.title.slice(0, input.length) === input) || (input.length > 0 && survey.title.slice(0, input.length + colorRed.length) === colorRed + input)
+          )
+        )
     });
     return answer.value;
   }
