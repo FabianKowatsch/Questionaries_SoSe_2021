@@ -25,7 +25,9 @@ export class User extends AbstractUser {
     let choices: Choice[] = PromptHandler.createDisabledChoicesUser(true, this);
     let answer: string = await PromptHandler.select("Select the survey you want to participate in: ", choices);
     switch (answer) {
-      case undefined || "return":
+      case "return":
+      case undefined:
+      case "null":
         return;
         break;
       default:
@@ -40,6 +42,7 @@ export class User extends AbstractUser {
     let answer: string = await PromptHandler.autocomplete("Type the name of the survey you want to participate in: ", choices);
     switch (answer) {
       case "disabled":
+      case "null":
         console.log("the answer you chose is not available.");
         await this.continueSearching();
         break;
